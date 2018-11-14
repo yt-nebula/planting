@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
-@author: binshao
+@author: rfkimi
 @file: planting_api_v1.py
 """
 import json
@@ -82,12 +82,12 @@ class PlantingApi(object):
         self.inventory = InventoryManager(loader=self.loader, sources='hosts')
         self.variable_manager = VariableManager(loader=self.loader, inventory=self.inventory)
 
-    def run_planting(self, host_list, module_name, module_args):
+    def run_planting(self, host_list, task_list):
         play_source = dict(
             name="Planting Play",
             hosts=host_list,
             gather_facts='no',
-            tasks=[dict(action=dict(module=module_name, args=module_args))]
+            tasks=task_list
         )
         play = Play().load(play_source, variable_manager=self.variable_manager, loader=self.loader)
 
@@ -126,4 +126,8 @@ class PlantingApi(object):
 if __name__ == "__main__":
     planting_test = PlantingApi()
     hosts = ['127.0.0.1']
-    planting_test.run_planting(hosts, 'command', 'ls')
+    tasks = tasks_list = [
+        dict(action=dict(module='command', args='ls')),
+        dict(action=dict(module='command'), args='cd')
+    ]
+    planting_test.run_planting(hosts, tasks)
