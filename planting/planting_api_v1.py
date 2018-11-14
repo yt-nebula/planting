@@ -80,7 +80,8 @@ class PlantingApi(object):
         self.results_callback = ResultCallback()
         # after ansible 2.3 need parameter 'sources'
         self.inventory = InventoryManager(loader=self.loader, sources='hosts')
-        self.variable_manager = VariableManager(loader=self.loader, inventory=self.inventory)
+        self.variable_manager = VariableManager(
+            loader=self.loader, inventory=self.inventory)
 
     def run_planting(self, host_list, task_list):
         play_source = dict(
@@ -89,7 +90,9 @@ class PlantingApi(object):
             gather_facts='no',
             tasks=task_list
         )
-        play = Play().load(play_source, variable_manager=self.variable_manager, loader=self.loader)
+        play = Play().load(
+            play_source, variable_manager=self.variable_manager,
+            loader=self.loader)
 
         tqm = None
         try:
@@ -126,7 +129,7 @@ class PlantingApi(object):
 if __name__ == "__main__":
     planting_test = PlantingApi()
     hosts = ['127.0.0.1']
-    tasks = tasks_list = [
+    tasks = [
         dict(action=dict(module='command', args='ls')),
         dict(action=dict(module='command'), args='cd')
     ]
