@@ -1,0 +1,7 @@
+---
+- hosts: all
+  tasks:
+  - name: Download xxx.conf
+    get_url: 
+      url: http://cs.nju.edu.cn/zhouzh/zhouzh.files/publication/MLbook2016-HowToUse.pdf
+      dest: ~/MLbook2016-HowToUse.pdf

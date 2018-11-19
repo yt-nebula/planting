@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
-"""
-@author: binshao
-@file: planting_api_v1.py
-"""
+
 import json
 from collections import namedtuple
 
@@ -14,27 +11,10 @@ from ansible.playbook.play import Play
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.plugins.callback import CallbackBase
 
-
-Options = namedtuple('Options',
-                     ['connection',
-                      'remote_user',
-                      'ask_sudo_pass',
-                      'verbosity',
-                      'ack_pass',
-                      'module_path',
-                      'forks',
-                      'become',
-                      'become_method',
-                      'become_user',
-                      'check',
-                      'listhosts',
-                      'listtasks',
-                      'listtags',
-                      'syntax',
-                      'sudo_user',
-                      'sudo',
-                      'diff'])
-
+Options = namedtuple('Options', ['connection', 'module_path', 'forks', 'remote_user',
+                                'private_key_file', 'ssh_common_args', 'ssh_extra_args', 'sftp_extra_args',
+                                'scp_extra_args', 'become', 'become_method', 'become_user', 'verbosity', 'check',
+                                'diff'])
 
 # return the command result
 class ResultCallback(CallbackBase):
@@ -65,41 +45,29 @@ class ResultCallback(CallbackBase):
         self.host_failed[result._host.get_name()] = result
 
 
-class PlantingApi(object):
-    def __init__(self):
+class Planting(object):
 
-        self.ops = Options(connection='smart',
-                           remote_user=None,
-                           ack_pass=None,
-                           sudo_user=None,
-                           forks=5,
-                           sudo=None,
-                           ask_sudo_pass=False,
-                           verbosity=5,
-                           module_path=None,
-                           become=None,
-                           become_method=None,
-                           become_user=None,
-                           check=False,
-                           diff=False,
-                           listhosts=None,
-                           listtasks=None,
-                           listtags=None,
-                           syntax=None)
+    def __init__(self, machine, module_name, **kwargs):
         self.loader = DataLoader()
-        self.variable_manager = VariableManager()
-        self.passwords = dict()
-        self.results_callback = ResultCallback()
-        # after ansible 2.3 need parameter 'sources'
+        self.options = Options(connection='smart', module_path=['/usr/share/ansible'], forks=100,
+                        remote_user=None, private_key_file=None, ssh_common_args=None, ssh_extra_args=None,
+                        sftp_extra_args=None, scp_extra_args=None, become=None, become_method=None,
+                        become_user=None, verbosity=None, check=False, diff=False)
+
         self.inventory = InventoryManager(loader=self.loader, sources='hosts')
         self.variable_manager = VariableManager(loader=self.loader, inventory=self.inventory)
+        self.module_name = module_name
+        self.host_list = machine
+        self.module_args = kwargs
+        self.passwords = dict()
+        self.results_callback = ResultCallback()
 
-    def run_planting(self, host_list, module_name, module_args):
+    def run(self):
         play_source = dict(
             name="Planting Play",
-            hosts=host_list,
+            hosts=self.host_list,
             gather_facts='no',
-            tasks=[dict(action=dict(module=module_name, args=module_args))]
+            tasks=[dict(action=dict(module=self.module_name, args=self.module_args))]
         )
         play = Play().load(play_source, variable_manager=self.variable_manager, loader=self.loader)
 
@@ -109,7 +77,7 @@ class PlantingApi(object):
                 inventory=self.inventory,
                 variable_manager=self.variable_manager,
                 loader=self.loader,
-                options=self.ops,
+                options=self.options,
                 passwords=self.passwords
             )
             tqm._stdout_callback = self.results_callback
@@ -129,16 +97,3 @@ class PlantingApi(object):
         print("DOWN *********")
         for host, result in self.results_callback.host_unreachable.items():
             print('{0} >>> {1}'.format(host, result._result))
-
-
-if __name__ == "__main__":
-    planting_test = PlantingApi()
-    hosts = ['10.40.40.183']
-    
-    src = 'http://cs.nju.edu.cn/zhouzh/zhouzh.files/publication/MLbook2016-HowToUse.pdf'
-    dest = '~/MLbook2016-HowToUse.pdf'
-    args = {}
-    args['url'] = src
-    args['dest'] = dest
-
-    planting_test.run_planting(hosts, 'get_url', args)
