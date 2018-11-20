@@ -1,9 +1,0 @@
-[naive]
-10.40.50.132 ansible_ssh_user=linuxadmin ansible_ssh_pass=Hello=111! 
-
-[young]
-10.40.40.183 ansible_ssh_user=linuxadmin ansible_ssh_pass=Hello=111!
-
-[simple]
-10.40.40.180 ansible_ssh_user=linuxadmin ansible_ssh_pass=Hello=111!
-
