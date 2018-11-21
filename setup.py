@@ -28,9 +28,5 @@ setup(
                     'retrying',
                     'jinja2',
                     'fabric==1.14.0'],
-    entry_points={
-        'PLANTING':[
-            'PLUGIN=opod_deploy_plugin.plugin: OpodDeployPlugin'
-    ]
-    },
+    scripts=['bin/planting'],
 )
