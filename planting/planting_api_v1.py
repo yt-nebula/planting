@@ -14,6 +14,7 @@ from ansible.playbook.play import Play
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.plugins.callback import CallbackBase
 
+from callback_json import ResultCallback
 
 Options = namedtuple('Options',
                      ['connection',
@@ -34,24 +35,6 @@ Options = namedtuple('Options',
                       'sudo_user',
                       'sudo',
                       'diff'])
-
-
-# return the command result
-class ResultCallback(CallbackBase):
-    def __init__(self, *args, **kwargs):
-        super(ResultCallback, self).__init__(*args, **kwargs)
-        self.host_ok = {}
-        self.host_unreachable = {}
-        self.host_failed = {}
-
-    def v2_runner_on_unreachable(self, result):
-        self.host_unreachable[result._host.get_name()] = result
-
-    def v2_runner_on_ok(self, result, *args, **kwargs):
-        self.host_ok[result._host.get_name()] = result
-
-    def v2_runner_on_failed(self, result, *args, **kwargs):
-        self.host_failed[result._host.get_name()] = result
 
 
 class PlantingApi(object):
@@ -79,7 +62,18 @@ class PlantingApi(object):
         self.passwords = dict()
         self.results_callback = ResultCallback()
         # after ansible 2.3 need parameter 'sources'
+        # create inventory, use path to host config file as source or hosts in a comma separated string
         self.inventory = InventoryManager(loader=self.loader, sources='hosts')
+        self.variable_manager = VariableManager(
+            loader=self.loader, inventory=self.inventory)
+
+    def setSources(self, host_list):
+        sources = ""
+        if (len(host_list) == 1):
+            sources = host_list[0] + ','
+        else:
+            sources = ','.join(host_list)
+        self.inventory = InventoryManager(loader=self.loader, sources=sources)
         self.variable_manager = VariableManager(
             loader=self.loader, inventory=self.inventory)
 
@@ -109,28 +103,19 @@ class PlantingApi(object):
             if tqm is not None:
                 tqm.cleanup()
 
-        results_raw = dict()
-        results_raw['success'] = dict()
-        results_raw['failed'] = dict()
-        results_raw['unreachable'] = dict()
-
-        for host, result in self.results_callback.host_ok.items():
-            results_raw['success'][host] = json.dumps(result._result)
-
-        for host, result in self.results_callback.host_failed.items():
-            results_raw['failed'][host] = result._result['msg']
-
-        for host, result in self.results_callback.host_unreachable.items():
-            results_raw['unreachable'][host] = result._result['msg']
-
-        print(results_raw)
+        print(json.dumps(self.results_callback.play_info()))
+        # for task in self.results_callback.task_list():
+        #     for host, result in task['hosts'].items():
+        #          print(host, result['stdout'])
 
 
 if __name__ == "__main__":
     planting_test = PlantingApi()
-    hosts = ['127.0.0.1']
+    sources = ['10.40.46.64', '10.40.46.62', '10.10.40.220']
+    planting_test.setSources(sources)
+    hosts = ['10.40.46.64', '10.40.46.62']
     tasks = [
         dict(action=dict(module='command', args='ls')),
-        dict(action=dict(module='command'), args='cd')
+        dict(action=dict(module='command', args='df -hl'))
     ]
     planting_test.run_planting(hosts, tasks)
