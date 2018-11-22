@@ -4,6 +4,7 @@
 @author: rfkimi
 @file: planting_api_v1.py
 """
+import sys
 import json
 from collections import namedtuple
 
@@ -12,9 +13,9 @@ from ansible.vars.manager import VariableManager
 from ansible.inventory.manager import InventoryManager
 from ansible.playbook.play import Play
 from ansible.executor.task_queue_manager import TaskQueueManager
-from ansible.plugins.callback import CallbackBase
 
 from callback_json import ResultCallback
+from logger import logger
 
 Options = namedtuple('Options',
                      ['connection',
@@ -61,6 +62,13 @@ class PlantingApi(object):
         self.variable_manager = VariableManager()
         self.passwords = dict()
         self.results_callback = ResultCallback()
+        self.logger = logger
+        level = logger.DEBUG
+        complete_log = []
+        logger.add_consumers(
+            (logger.VERBOSE_DEBUG, sys.stdout),
+            (level, complete_log.append)
+        )
         # after ansible 2.3 need parameter 'sources'
         # create inventory, use path to host config file as source or hosts in a comma separated string
         self.inventory = InventoryManager(loader=self.loader, sources='hosts')
@@ -102,11 +110,6 @@ class PlantingApi(object):
         finally:
             if tqm is not None:
                 tqm.cleanup()
-
-        print(json.dumps(self.results_callback.play_info()))
-        # for task in self.results_callback.task_list():
-        #     for host, result in task['hosts'].items():
-        #          print(host, result['stdout'])
 
 
 if __name__ == "__main__":
