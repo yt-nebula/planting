@@ -12,7 +12,7 @@ def start_docker():
     container = client.containers.run("rastasheep/ubuntu-sshd:16.04", detach=True)
 
     status = client.containers.get(container.short_id)
-    docker_machine = {'ip': status.attrs['NetworkSettings']['IPAddress'], /
+    docker_machine = {'ip': status.attrs['NetworkSettings']['IPAddress'], \
     'username': 'root', 'password': 'root', 'docker_id': container.short_id}
     
     return docker_machine
