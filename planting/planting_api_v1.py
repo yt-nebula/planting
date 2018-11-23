@@ -114,9 +114,9 @@ class PlantingApi(object):
 
 if __name__ == "__main__":
     planting_test = PlantingApi()
-    sources = ['10.40.46.64', '10.40.46.62', '10.10.40.220']
+    sources = ['127.0.0.1']
     planting_test.setSources(sources)
-    hosts = ['10.40.46.64', '10.40.46.62']
+    hosts = ['127.0.0.1']
     tasks = [
         dict(action=dict(module='command', args='ls')),
         dict(action=dict(module='command', args='df -hl'))
