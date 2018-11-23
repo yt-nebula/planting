@@ -1,1 +1,2 @@
 ansible==2.5.0
+docker==3.5.1
