@@ -14,8 +14,10 @@ from ansible.inventory.manager import InventoryManager
 from ansible.playbook.play import Play
 from ansible.executor.task_queue_manager import TaskQueueManager
 
+from collections import defaultdict
 from callback_json import ResultCallback
 from logger import logger
+from environment import Environment
 
 Options = namedtuple('Options',
                      ['connection',
@@ -39,9 +41,9 @@ Options = namedtuple('Options',
 
 
 class PlantingApi(object):
-    def __init__(self):
+    def __init__(self, env: Environment):
         self.ops = Options(connection='smart',
-                           remote_user=None,
+                           remote_user=env.remote_user,
                            ack_pass=None,
                            sudo_user=None,
                            forks=5,
@@ -60,7 +62,7 @@ class PlantingApi(object):
                            syntax=None)
         self.loader = DataLoader()
         self.variable_manager = VariableManager()
-        self.passwords = dict()
+        self.passwords = {"conn_pass": env.password}
         self.results_callback = ResultCallback()
         self.logger = logger
         level = logger.DEBUG
@@ -71,17 +73,8 @@ class PlantingApi(object):
         )
         # after ansible 2.3 need parameter 'sources'
         # create inventory, use path to host config file as source or hosts in a comma separated string
-        self.inventory = InventoryManager(loader=self.loader, sources='hosts')
-        self.variable_manager = VariableManager(
-            loader=self.loader, inventory=self.inventory)
-
-    def setSources(self, host_list):
-        sources = ""
-        if (len(host_list) == 1):
-            sources = host_list[0] + ','
-        else:
-            sources = ','.join(host_list)
-        self.inventory = InventoryManager(loader=self.loader, sources=sources)
+        self.inventory = InventoryManager(
+            loader=self.loader, sources=env.ip+',')
         self.variable_manager = VariableManager(
             loader=self.loader, inventory=self.inventory)
 
@@ -111,14 +104,31 @@ class PlantingApi(object):
             if tqm is not None:
                 tqm.cleanup()
 
+    def print_info(self):
+        for host in self.results_callback.host_ok:
+            for task in self.results_callback.host_ok[host]:
+                self.logger.info(host + ":\n" + task['stdout'])
+
+        for host in self.results_callback.host_unreachable:
+            for task in self.results_callback.host_unreachable[host]:
+                self.logger.error(host + ":\n" + task['msg'])
+
+        for host in self.results_callback.host_failed:
+            for task in self.results_callback.host_failed[host]:
+                self.logger.error(host + ":\n" + task['msg'])
+
+    def clear_callback(self):
+        self.results_callback.host_unreachable = defaultdict(list)
+        self.results_callback.host_failed = defaultdict(list)
+        self.results_callback.host_ok = defaultdict(list)
+
 
 if __name__ == "__main__":
     planting_test = PlantingApi()
-    sources = ['127.0.0.1']
-    planting_test.setSources(sources)
-    hosts = ['127.0.0.1']
     tasks = [
         dict(action=dict(module='command', args='ls')),
         dict(action=dict(module='command', args='df -hl'))
     ]
     planting_test.run_planting(hosts, tasks)
+    planting_test.print_info()
+    planting_test.clear_callback()

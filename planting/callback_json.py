@@ -10,6 +10,7 @@ import os
 import json
 import datetime
 import time
+from collections import defaultdict
 
 from ansible.plugins.callback import CallbackBase
 from ansible.playbook.play import Play
@@ -29,6 +30,9 @@ class ResultCallback(CallbackBase):
         self.output = []
         self.playbook = {}
         self._logger = Logger()
+        self.host_ok = defaultdict(list)
+        self.host_unreachable = defaultdict(list)
+        self.host_failed = defaultdict(list)
         level = self._logger.DEBUG
         complete_log = []
         # from log config
@@ -107,6 +111,7 @@ class ResultCallback(CallbackBase):
         self.results[-1]['tasks'][-1]['task']['duration']['end'] = end_time
         self.results[-1]['play']['duration']['end'] = end_time
         self._logger.debug(json.dumps({host.name: self.results[-1]}, indent=4))
+        self.host_ok[result._host.get_name()].append(clean_result)
 
     def v2_playbook_on_stats(self, stats):
         """Display info about playbook statistics"""
@@ -133,6 +138,7 @@ class ResultCallback(CallbackBase):
         self.results[-1]['tasks'][-1]['task']['duration']['end'] = end_time
         self.results[-1]['play']['duration']['end'] = end_time
         self._logger.error(json.dumps({host.name: self.results[-1]}, indent=4))
+        self.host_failed[result._host.get_name()].append(clean_result)
 
     def v2_runner_on_unreachable(self, result, **kwargs):
         host = result._host
@@ -143,5 +149,6 @@ class ResultCallback(CallbackBase):
         self.results[-1]['tasks'][-1]['task']['duration']['end'] = end_time
         self.results[-1]['play']['duration']['end'] = end_time
         self._logger.error(json.dumps({host.name: self.results[-1]}, indent=4))
+        self.host_unreachable[result._host.get_name()].append(clean_result)  
 
     v2_runner_on_skipped = v2_runner_on_ok
