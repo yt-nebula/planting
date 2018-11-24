@@ -104,10 +104,10 @@ class PlantingApi(object):
             if tqm is not None:
                 tqm.cleanup()
 
-    def print_info(self):
+    def print_info(self, field):
         for host in self.results_callback.host_ok:
             for task in self.results_callback.host_ok[host]:
-                self.logger.info(host + ":\n" + task['stdout'])
+                self.logger.info(host + ":\n" + task[field])
 
         for host in self.results_callback.host_unreachable:
             for task in self.results_callback.host_unreachable[host]:

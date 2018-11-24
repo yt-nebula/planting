@@ -7,23 +7,23 @@ from planting_api_v1 import PlantingApi
 from machine import Machine
 
 
-class Download(ModuleBase):
+class Move(ModuleBase):
     def __init__(self):
-        super(Download, self).__init__()
+        super(Move, self).__init__()
 
-    def build_tasks(self, url, dest):
+    def build_tasks(self, src, dest):
         self._tasks = [dict(action=dict(
-            module='get_url',
-            args=dict(url=url, dest=dest)))]
+            module='shell',
+            args='mv ' + src + ' ' + dest)]
     
     def output_field(self):
-        self._output = 'msg'
+        self._output = 'stdout'
 
     def register_machine(self, machine: Machine):
         self._env=machine._env
         self._planting=machine._planting
-        machine.download=self
+        machine.move=self
 
-    def __call__(self, url, dest):
-        self.build_tasks(url, dest)
+    def __call__(self, src, dest):
+        self.build_tasks(src, dest)
         self.play()
