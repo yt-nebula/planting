@@ -5,15 +5,16 @@ from environment import Environment
 from planting_module import ModuleBase
 from planting_api_v1 import PlantingApi
 
-class Move(ModuleBase):
-    def __init__(self):
-        super(Move, self).__init__()
 
-    def build_tasks(self, src, dest):
+class Remove(ModuleBase):
+    def __init__(self):
+        super(Remove, self).__init__()
+
+    def build_tasks(self, src):
         self._tasks = [dict(
             action=dict(
                 module='shell',
-                args='mv ' + src + ' ' + dest)
+                args='rm -rf ' + src)
         )]
 
     def output_field(self):
@@ -22,8 +23,8 @@ class Move(ModuleBase):
     def register_machine(self, machine):
         self._env = machine._env
         self._planting = machine._planting
-        machine.move = self
+        machine.remove = self
 
-    def __call__(self, src, dest):
-        self.build_tasks(src, dest)
-        self.play()
+    def __call__(self, src):
+        self.build_tasks(src)
+        return self.play()

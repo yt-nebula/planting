@@ -33,6 +33,7 @@ class ResultCallback(CallbackBase):
         self.host_ok = defaultdict(list)
         self.host_unreachable = defaultdict(list)
         self.host_failed = defaultdict(list)
+        self.success = True
         level = self._logger.DEBUG
         complete_log = []
         # from log config
@@ -139,6 +140,7 @@ class ResultCallback(CallbackBase):
         self.results[-1]['play']['duration']['end'] = end_time
         self._logger.error(json.dumps({host.name: self.results[-1]}, indent=4))
         self.host_failed[result._host.get_name()].append(clean_result)
+        self.success = False
 
     def v2_runner_on_unreachable(self, result, **kwargs):
         host = result._host
@@ -150,5 +152,6 @@ class ResultCallback(CallbackBase):
         self.results[-1]['play']['duration']['end'] = end_time
         self._logger.error(json.dumps({host.name: self.results[-1]}, indent=4))
         self.host_unreachable[result._host.get_name()].append(clean_result)  
+        self.success = False
 
     v2_runner_on_skipped = v2_runner_on_ok

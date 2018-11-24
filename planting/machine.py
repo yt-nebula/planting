@@ -1,8 +1,12 @@
 import sys
+import os
+import pkgutil
+import inspect
+
 from planting_api_v1 import PlantingApi
 from environment import Environment
 from planting_module import ModuleBase
-from planting_module import operations
+from planting_module import operations, network
 
 
 class Machine(object):
@@ -11,6 +15,18 @@ class Machine(object):
             ip=ip, remote_user=remote_user, password=password)
         self.build_planting()
         self.modules = []
+
+    def register_all(self):
+        self.register_from_module(operations)
+        self.register_from_module(network)
+
+    def register_from_module(self, module):
+        for name, obj in inspect.getmembers(module):
+            if inspect.ismodule(obj):
+                for name, obj in inspect.getmembers(obj):
+                    if inspect.isclass(obj) and not inspect.isabstract(obj):
+                        if issubclass(obj, ModuleBase):
+                            self.register(obj)
 
     def build_planting(self):
         env = self._env
@@ -55,12 +71,3 @@ class Machine(object):
         self.modules.append(moduleName)
         module = moduleClass()
         module.register_machine(self)
-
-
-if __name__ == '__main__':
-    node1 = Machine('xxx.xx', 'xxx', 'xxx')
-    node1.register(operations.download.Download)
-    node1.register(operations.move.Move)
-    node1.list_all_module()
-    node1.move(src="~/vim.gif", dest="~/snow.gif")
-    # node1.download(url='http://www.viemu.com/vi-vim-cheat-sheet.gif', dest='~/vim.gif')

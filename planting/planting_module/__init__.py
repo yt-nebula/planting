@@ -3,7 +3,6 @@
 from abc import ABCMeta, abstractmethod
 from planting_api_v1 import PlantingApi
 
-
 class ModuleBase(metaclass=ABCMeta):
     def __init__(self):
         self._tasks = None
@@ -29,4 +28,4 @@ class ModuleBase(metaclass=ABCMeta):
         self.output_field()
         self._planting.run_planting([self._env.ip], self._tasks)
         self._planting.print_info(self._output)
-        self._planting.clear_callback()
+        return self._planting.result()

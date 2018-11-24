@@ -98,6 +98,7 @@ class PlantingApi(object):
                 options=self.ops,
                 passwords=self.passwords
             )
+            self.clear_callback()
             tqm._stdout_callback = self.results_callback
             tqm.run(play)
         finally:
@@ -107,7 +108,7 @@ class PlantingApi(object):
     def print_info(self, field):
         for host in self.results_callback.host_ok:
             for task in self.results_callback.host_ok[host]:
-                self.logger.info(host + ":\n" + task[field])
+                self.logger.info(host + ":\n" + str(task[field]))
 
         for host in self.results_callback.host_unreachable:
             for task in self.results_callback.host_unreachable[host]:
@@ -121,7 +122,10 @@ class PlantingApi(object):
         self.results_callback.host_unreachable = defaultdict(list)
         self.results_callback.host_failed = defaultdict(list)
         self.results_callback.host_ok = defaultdict(list)
+        self.results_callback.success = True
 
+    def result(self):
+        return self.results_callback.success
 
 if __name__ == "__main__":
     planting_test = PlantingApi()

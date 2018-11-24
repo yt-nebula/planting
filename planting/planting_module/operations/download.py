@@ -4,7 +4,6 @@
 from environment import Environment
 from planting_module import ModuleBase
 from planting_api_v1 import PlantingApi
-from machine import Machine
 
 
 class Download(ModuleBase):
@@ -19,12 +18,7 @@ class Download(ModuleBase):
     def output_field(self):
         self._output = 'msg'
 
-    def register_machine(self, machine: Machine):
-        self._env = machine._env
-        self._planting = machine._planting
-        machine.download = self
-
-    def register_machine(self, machine: Machine):
+    def register_machine(self, machine):
         self._env = machine._env
         self._planting = machine._planting
         machine.download = self

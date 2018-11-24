@@ -5,15 +5,17 @@ from environment import Environment
 from planting_module import ModuleBase
 from planting_api_v1 import PlantingApi
 
-class Move(ModuleBase):
-    def __init__(self):
-        super(Move, self).__init__()
 
-    def build_tasks(self, src, dest):
+class Create(ModuleBase):
+    def __init__(self):
+        super(Create, self).__init__()
+
+    def build_tasks(self, path: str, state: str):
+        command = state is "dir" and "mkdir" or "touch"
         self._tasks = [dict(
             action=dict(
                 module='shell',
-                args='mv ' + src + ' ' + dest)
+                args=command + ' ' + path)
         )]
 
     def output_field(self):
@@ -22,8 +24,8 @@ class Move(ModuleBase):
     def register_machine(self, machine):
         self._env = machine._env
         self._planting = machine._planting
-        machine.move = self
+        machine.create = self
 
-    def __call__(self, src, dest):
-        self.build_tasks(src, dest)
-        self.play()
+    def __call__(self, path, state):
+        self.build_tasks(path, state)
+        return self.play()
