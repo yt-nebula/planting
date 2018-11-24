@@ -56,7 +56,7 @@ class Machine(object):
 
 
 if __name__ == '__main__':
-    node1 = Machine('127.0.0.1', 'shaobin', '1994730kimi')
+    node1 = Machine('127.0.0.1', 'aaaa', 'aaaaaa')
     node1.register(operations.download.Download)
     node1.register(operations.move.Move)
     node1.list_all_module()
