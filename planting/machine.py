@@ -56,7 +56,7 @@ class Machine(object):
         module.register_machine(self)
 
 if __name__ == '__main__':
-    node1 = Machine("127.0.0.1", "root", "12345")
+    node1 = Machine("127.0.0.1", "root", "123456")
     node1.register(operations.download.Download)
     node1.download(url="www.baidu.com", dest="~/")
 
