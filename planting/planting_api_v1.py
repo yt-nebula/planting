@@ -1,15 +1,12 @@
 #!/usr/bin/env python
 # encoding: utf-8
-"""
-@author: rfkimi
-@file: planting_api_v1.py
-"""
 import json
 from collections import namedtuple
 
 from ansible.parsing.dataloader import DataLoader
 from ansible.vars.manager import VariableManager
 from ansible.inventory.manager import InventoryManager
+from ansible.inventory.host import Host
 from ansible.playbook.play import Play
 from ansible.executor.task_queue_manager import TaskQueueManager
 from ansible.plugins.callback import CallbackBase
@@ -54,9 +51,9 @@ class ResultCallback(CallbackBase):
         self.host_failed[result._host.get_name()] = result
 
 
-class PlantingApi(object):
-    def __init__(self):
-        self.ops = Options(connection='smart',
+class Machine(object):
+    def __init__(self, ip, username=None, password=None, port='22'):
+        self.ops = Options(connection='ssh',
                            remote_user=None,
                            ack_pass=None,
                            sudo_user=None,
@@ -78,21 +75,43 @@ class PlantingApi(object):
         self.variable_manager = VariableManager()
         self.passwords = dict()
         self.results_callback = ResultCallback()
-        # after ansible 2.3 need parameter 'sources'
-        self.inventory = InventoryManager(loader=self.loader, sources='hosts')
-        self.variable_manager = VariableManager(
-            loader=self.loader, inventory=self.inventory)
+        self.inventory = InventoryManager(loader=self.loader)
+        self.variable_manager = VariableManager(loader=self.loader, inventory=self.inventory)
+        host_info = Host(name=ip, port=port)
+        self.variable_manager.set_host_variable(host_info, 'ansible_user', username)
+        self.variable_manager.set_host_variable(host_info, 'ansible_pass', password)
+        self.host_pattern = ip
 
-    def run_planting(self, host_list, task_list):
+    class Network(object):
+        @staticmethod
+        def port(port):
+            return
+
+        @staticmethod
+        def process(process):
+            return
+
+    class File(object):
+        @staticmethod
+        def copy(path, dest):
+            return
+
+    def run_ansible(self, task_list):
+        """use ansible module
+
+        Args:
+            task_list: ansible module and args
+        Returns:
+            json: result return
+
+        """
         play_source = dict(
             name="Planting Play",
-            hosts=host_list,
+            hosts=self.host_pattern,
             gather_facts='no',
             tasks=task_list
         )
-        play = Play().load(
-            play_source, variable_manager=self.variable_manager,
-            loader=self.loader)
+        play = Play().load(play_source, variable_manager=self.variable_manager, loader=self.loader)
 
         tqm = None
         try:
@@ -127,10 +146,11 @@ class PlantingApi(object):
 
 
 if __name__ == "__main__":
-    planting_test = PlantingApi()
-    hosts = ['127.0.0.1']
+    node1 = Machine(ip='127.0.0.1', username="aaa", password="1234567", port='22')
     tasks = [
-        dict(action=dict(module='command', args='ls')),
-        dict(action=dict(module='command'), args='cd')
+        dict(action=dict(module='command', args='ls'))
     ]
-    planting_test.run_planting(hosts, tasks)
+    node1.run_ansible(tasks)
+    node1.Network.port(port=['22'])
+    node1.Network.process(process=['java', 'tomcat'])
+    node1.File.copy(path='path', dest='dest')
