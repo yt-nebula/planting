@@ -1,17 +1,23 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-from planting.environment import Environment
-from planting.planting_module import ModuleBase
-from planting.planting_api_v1 import PlantingApi
+from environment import Environment
+from planting_module import ModuleBase
+from planting_api_v1 import PlantingApi
+from machine import Machine
 
 
 class Download(ModuleBase):
-    def __init__(self, env: Environment):
-        super(Download, self).__init__(env)
+    def __init__(self):
+        super(Download, self).__init__()
 
-    def _play(self):
-        tasks = [ dict(action=dict(module='get_url', url='url')) ]
-        planting_test.run_planting(hosts, tasks)
-        planting_test.print_info()
-        planting_test.clear_callback()
+    def build_tasks(self):
+        self._tasks = [dict(action=dict(
+            module='get_url',
+            url='http://cs.nju.edu.cn/zhouzh/zhouzh.files/publication/MLbook2016-HowToUse.pdf'),  # noqa
+            dest="~/MLbook2016-HowToUse.pdf")]
+        
+    def register_machine(self, machine: Machine):
+        self._env = machine._env
+        self._planting = machine._planting
+        machine.download = self

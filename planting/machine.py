@@ -18,7 +18,7 @@ class Machine(object):
             raise AttributeError("missing parameter password")
         if env.remote_user is None:
             raise AttributeError("missing parameter remote_user")
-        self._planting = PlantingApi(self.env)
+        self._planting = PlantingApi(env)
 
     @property
     def password(self):
@@ -48,12 +48,19 @@ class Machine(object):
         for module, _ in self.modules.items():
             print(module)
 
-    def register(self, module: ModuleBase):
-        moduleName = type(module).__name__
-        self.modules[moduleName] = module
-        module.register_planting(self._planting)
+    def register(self, moduleClass):
+        # moduleName = type(module).__name__
+        # self.modules[moduleName] = module
+        module = moduleClass()
+        module.register_machine(self)
 
 if __name__ == '__main__':
-    machine = Machine()
-    machine.register(operations.download)
+    node1 = Machine()
+    node1.ip = '10.40.46.62'
+    node1.password = 'Dekstone1!'
+    node1.remote_user = 'flxiang'
+    node1.build_planting()
+    node1.register(operations.download.Download)
+    node1.download.play()
+
 
