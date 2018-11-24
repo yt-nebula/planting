@@ -11,13 +11,21 @@ class Download(ModuleBase):
     def __init__(self):
         super(Download, self).__init__()
 
-    def build_tasks(self):
+    def build_tasks(self, url, dest):
         self._tasks = [dict(action=dict(
             module='get_url',
-            url='http://cs.nju.edu.cn/zhouzh/zhouzh.files/publication/MLbook2016-HowToUse.pdf'),  # noqa
-            dest="~/MLbook2016-HowToUse.pdf")]
+            args=dict(url=url, dest=dest)))]
         
     def register_machine(self, machine: Machine):
         self._env = machine._env
         self._planting = machine._planting
         machine.download = self
+
+    def output_field(self, field):
+        self._output = field
+
+    def __call__(self):
+        self.build_tasks(url, dest)
+        self.output_field('msg')
+        self.play()
+
