@@ -9,6 +9,7 @@ class Machine(object):
     def __init__(self, ip=None, remote_user=None, password=None):
         self._env = Environment(
             ip=ip, remote_user=remote_user, password=password)
+        self.build_planting()
         self.modules = []
 
     def build_planting(self):
@@ -57,11 +58,7 @@ class Machine(object):
 
 
 if __name__ == '__main__':
-    node1 = Machine()
-    node1.ip = '127.0.0.1'
-    node1.password = 'root'
-    node1.remote_user = 'root'
-    node1.build_planting()
+    node1 = Machine('xxx.xx', 'xxx', 'xxx')
     node1.register(operations.download.Download)
     node1.register(operations.move.Move)
     node1.list_all_module()
