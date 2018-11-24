@@ -56,9 +56,9 @@ class Machine(object):
 
 if __name__ == '__main__':
     node1 = Machine()
-    node1.ip = '10.40.46.62'
-    node1.password = 'Dekstone1!'
-    node1.remote_user = 'flxiang'
+    node1.ip = '127.0.0.1'
+    node1.password = 'xxx'
+    node1.remote_user = 'xxxs'
     node1.build_planting()
     node1.register(operations.download.Download)
     node1.download.play()
