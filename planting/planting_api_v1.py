@@ -110,14 +110,3 @@ class PlantingApi(object):
         self.results_callback.host_failed = defaultdict(list)
         self.results_callback.host_ok = defaultdict(list)
 
-
-# if __name__ == "__main__":
-#     node1 = PlantingApi(ip='127.0.0.1')
-#     # tasks = [
-#     #     dict(action=dict(module='file', args="path=~/test.conf state=touch"))
-#     # ]
-#     # node1.run_ansible(tasks)
-#     # node1.Network.port(port=['22'])
-#     # node1.Network.process(process=['java', 'tomcat'])
-#     # node1.File.copy(path='path', dest='dest')
-#     node1.mkdir(path='~/test')
