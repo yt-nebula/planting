@@ -18,7 +18,7 @@ class Fetch(ModuleBase):
     def register_machine(self, machine):
         self._env = machine._env
         self._planting = machine._planting
-        machine.download = self
+        machine.copy = self
 
     def __call__(self, src, dest):
         self.build_tasks(src, dest)

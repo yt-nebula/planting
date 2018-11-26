@@ -21,7 +21,7 @@ class Pip(ModuleBase):
     def register_machine(self, machine):
         self._env = machine._env
         self._planting = machine._planting
-        machine.move = self
+        machine.pip = self
 
     def __call__(self, package):
         self.build_tasks(package)

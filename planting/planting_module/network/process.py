@@ -20,7 +20,7 @@ class Process(ModuleBase):
     def register_machine(self, machine):
         self._env = machine._env
         self._planting = machine._planting
-        machine.move = self
+        machine.process = self
 
     def __call__(self, process, state):
         self.build_tasks(process, state)
