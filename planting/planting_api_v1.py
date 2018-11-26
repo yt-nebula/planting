@@ -4,16 +4,20 @@
 @author: rfkimi
 @file: planting_api_v1.py
 """
-import json
+import sys
 from collections import namedtuple
 
 from ansible.parsing.dataloader import DataLoader
 from ansible.vars.manager import VariableManager
 from ansible.inventory.manager import InventoryManager
 from ansible.playbook.play import Play
+from ansible.inventory.host import Host
 from ansible.executor.task_queue_manager import TaskQueueManager
-from ansible.plugins.callback import CallbackBase
 
+from collections import defaultdict
+from callback_json import ResultCallback
+from logger import logger
+from environment import Environment
 
 Options = namedtuple('Options',
                      ['connection',
@@ -36,26 +40,8 @@ Options = namedtuple('Options',
                       'diff'])
 
 
-# return the command result
-class ResultCallback(CallbackBase):
-    def __init__(self, *args, **kwargs):
-        super(ResultCallback, self).__init__(*args, **kwargs)
-        self.host_ok = {}
-        self.host_unreachable = {}
-        self.host_failed = {}
-
-    def v2_runner_on_unreachable(self, result):
-        self.host_unreachable[result._host.get_name()] = result
-
-    def v2_runner_on_ok(self, result, *args, **kwargs):
-        self.host_ok[result._host.get_name()] = result
-
-    def v2_runner_on_failed(self, result, *args, **kwargs):
-        self.host_failed[result._host.get_name()] = result
-
-
 class PlantingApi(object):
-    def __init__(self):
+    def __init__(self, env: Environment):
         self.ops = Options(connection='smart',
                            remote_user=None,
                            ack_pass=None,
@@ -76,12 +62,27 @@ class PlantingApi(object):
                            syntax=None)
         self.loader = DataLoader()
         self.variable_manager = VariableManager()
-        self.passwords = dict()
+        self.passwords = {"conn_pass": env.password}
         self.results_callback = ResultCallback()
+        self.logger = logger
+        level = logger.DEBUG
+        complete_log = []
+        logger.add_consumers(
+            (logger.VERBOSE_DEBUG, sys.stdout),
+            (level, complete_log.append)
+        )
         # after ansible 2.3 need parameter 'sources'
-        self.inventory = InventoryManager(loader=self.loader, sources='hosts')
+        # create inventory, use path to host config file
+        # as source or hosts in a comma separated string
+        self.inventory = InventoryManager(
+            loader=self.loader, sources=env.ip+',')
         self.variable_manager = VariableManager(
             loader=self.loader, inventory=self.inventory)
+        host_info = Host(name=env.ip, port='22')
+        self.variable_manager.set_host_variable(
+            host_info, 'ansible_user', env.remote_user)
+        self.variable_manager.set_host_variable(
+            host_info, 'ansible_pass', env.password)
 
     def run_planting(self, host_list, task_list):
         play_source = dict(
@@ -103,34 +104,31 @@ class PlantingApi(object):
                 options=self.ops,
                 passwords=self.passwords
             )
+            self.clear_callback()
             tqm._stdout_callback = self.results_callback
             tqm.run(play)
         finally:
             if tqm is not None:
                 tqm.cleanup()
 
-        results_raw = dict()
-        results_raw['success'] = dict()
-        results_raw['failed'] = dict()
-        results_raw['unreachable'] = dict()
+    def print_info(self, field):
+        for host in self.results_callback.host_ok:
+            for task in self.results_callback.host_ok[host]:
+                self.logger.info(host + ":\n" + str(task[field]))
 
-        for host, result in self.results_callback.host_ok.items():
-            results_raw['success'][host] = json.dumps(result._result)
+        for host in self.results_callback.host_unreachable:
+            for task in self.results_callback.host_unreachable[host]:
+                self.logger.error(host + ":\n" + task['msg'])
 
-        for host, result in self.results_callback.host_failed.items():
-            results_raw['failed'][host] = result._result['msg']
+        for host in self.results_callback.host_failed:
+            for task in self.results_callback.host_failed[host]:
+                self.logger.error(host + ":\n" + task['msg'])
 
-        for host, result in self.results_callback.host_unreachable.items():
-            results_raw['unreachable'][host] = result._result['msg']
+    def clear_callback(self):
+        self.results_callback.host_unreachable = defaultdict(list)
+        self.results_callback.host_failed = defaultdict(list)
+        self.results_callback.host_ok = defaultdict(list)
+        self.results_callback.success = True
 
-        print(results_raw)
-
-
-if __name__ == "__main__":
-    planting_test = PlantingApi()
-    hosts = ['127.0.0.1']
-    tasks = [
-        dict(action=dict(module='command', args='ls')),
-        dict(action=dict(module='command'), args='cd')
-    ]
-    planting_test.run_planting(hosts, tasks)
+    def result(self):
+        return self.results_callback.success
