@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-from environment import Environment
 from planting_module import ModuleBase
-from planting_api_v1 import PlantingApi
 
 
 class Remove(ModuleBase):

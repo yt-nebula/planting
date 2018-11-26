@@ -4,16 +4,15 @@
 from planting_module import ModuleBase
 
 
-class Create(ModuleBase):
+class Unarchive(ModuleBase):
     def __init__(self):
-        super(Create, self).__init__()
+        super(Unarchive, self).__init__()
 
-    def build_tasks(self, path: str, state: str):
-        command = state is "dir" and "mkdir" or "touch"
+    def build_tasks(self, src, dest):
         self._tasks = [dict(
             action=dict(
-                module='shell',
-                args=command + ' ' + path)
+                module='unarchive',
+                args=dict(src=src, dest=dest, remote_src="yes"))
         )]
 
     def output_field(self):
@@ -22,8 +21,8 @@ class Create(ModuleBase):
     def register_machine(self, machine):
         self._env = machine._env
         self._planting = machine._planting
-        machine.create = self
+        machine.unarchive = self
 
-    def __call__(self, path, state):
-        self.build_tasks(path, state)
+    def __call__(self, src, dest):
+        self.build_tasks(src, dest)
         return self.play()

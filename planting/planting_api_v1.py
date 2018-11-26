@@ -5,7 +5,6 @@
 @file: planting_api_v1.py
 """
 import sys
-import json
 from collections import namedtuple
 
 from ansible.parsing.dataloader import DataLoader
@@ -72,7 +71,8 @@ class PlantingApi(object):
             (level, complete_log.append)
         )
         # after ansible 2.3 need parameter 'sources'
-        # create inventory, use path to host config file as source or hosts in a comma separated string
+        # create inventory, use path to host config file
+        # as source or hosts in a comma separated string
         self.inventory = InventoryManager(
             loader=self.loader, sources=env.ip+',')
         self.variable_manager = VariableManager(
@@ -126,13 +126,3 @@ class PlantingApi(object):
 
     def result(self):
         return self.results_callback.success
-
-if __name__ == "__main__":
-    planting_test = PlantingApi()
-    tasks = [
-        dict(action=dict(module='command', args='ls')),
-        dict(action=dict(module='command', args='df -hl'))
-    ]
-    planting_test.run_planting(hosts, tasks)
-    planting_test.print_info()
-    planting_test.clear_callback()
