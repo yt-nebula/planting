@@ -11,6 +11,7 @@ from ansible.parsing.dataloader import DataLoader
 from ansible.vars.manager import VariableManager
 from ansible.inventory.manager import InventoryManager
 from ansible.playbook.play import Play
+from ansible.inventory.host import Host
 from ansible.executor.task_queue_manager import TaskQueueManager
 
 from collections import defaultdict
@@ -42,7 +43,7 @@ Options = namedtuple('Options',
 class PlantingApi(object):
     def __init__(self, env: Environment):
         self.ops = Options(connection='smart',
-                           remote_user=env.remote_user,
+                           remote_user=None,
                            ack_pass=None,
                            sudo_user=None,
                            forks=5,
@@ -77,6 +78,11 @@ class PlantingApi(object):
             loader=self.loader, sources=env.ip+',')
         self.variable_manager = VariableManager(
             loader=self.loader, inventory=self.inventory)
+        host_info = Host(name=env.ip, port='22')
+        self.variable_manager.set_host_variable(
+            host_info, 'ansible_user', env.remote_user)
+        self.variable_manager.set_host_variable(
+            host_info, 'ansible_pass', env.password)
 
     def run_planting(self, host_list, task_list):
         play_source = dict(

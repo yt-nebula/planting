@@ -1,9 +1,5 @@
 #!/usr/bin/env python
 # encoding: utf-8
-"""
-@author: snowdrop
-@file: callback_json.py
-"""
 
 import copy
 import os
