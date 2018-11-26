@@ -48,14 +48,20 @@ class PlantingApi(object):
             (logger.VERBOSE_DEBUG, sys.stdout),
             (level, complete_log.append)
         )
-        # after ansible 2.3 need parameter 'sources'
-        # create inventory, use path to host config file as source or hosts in a comma separated string
-        self.inventory = InventoryManager(loader=self.loader, sources=env.ip+',')
-        self.variable_manager = VariableManager(loader=self.loader, inventory=self.inventory)
+        """
+        after ansible 2.3 need parameter 'sources'.
+        create inventory, use path to host config file
+        as source or hosts in a comma separated string.
+        """
+        self.inventory = InventoryManager(
+            loader=self.loader, sources=env.ip+',')
+        self.variable_manager = VariableManager(
+            loader=self.loader, inventory=self.inventory)
         host_info = Host(name=env.ip, port='22')
-        self.variable_manager.set_host_variable(host_info, 'ansible_user', env.remote_user)
-        self.variable_manager.set_host_variable(host_info, 'ansible_pass', env.password)
-        self.host_pattern = env.ip
+        self.variable_manager.set_host_variable(
+            host_info, 'ansible_user', env.remote_user)
+        self.variable_manager.set_host_variable(
+            host_info, 'ansible_pass', env.password)
 
     def run_planting(self, host_list, task_list):
         """use ansible module
@@ -109,4 +115,3 @@ class PlantingApi(object):
         self.results_callback.host_unreachable = defaultdict(list)
         self.results_callback.host_failed = defaultdict(list)
         self.results_callback.host_ok = defaultdict(list)
-

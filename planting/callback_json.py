@@ -146,6 +146,6 @@ class ResultCallback(CallbackBase):
         self.results[-1]['tasks'][-1]['task']['duration']['end'] = end_time
         self.results[-1]['play']['duration']['end'] = end_time
         self._logger.error(json.dumps({host.name: self.results[-1]}, indent=4))
-        self.host_unreachable[result._host.get_name()].append(clean_result)  
+        self.host_unreachable[result._host.get_name()].append(clean_result)
 
     v2_runner_on_skipped = v2_runner_on_ok

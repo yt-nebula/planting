@@ -7,4 +7,3 @@ class Environment(object):
         self.password = password
         self.remote_user = remote_user
         self.ip = ip
-
