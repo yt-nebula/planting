@@ -193,8 +193,7 @@ class Logger(object):
                 return level
         return self.FATAL
 
-    @staticmethod
-    def level_matches(level, consumer_level):
+    def level_matches(self, level, consumer_level):
         """
         >>> l = Logger()
         >>> l.level_matches(3, 4)
@@ -240,8 +239,7 @@ class Logger(object):
             self.consumers.remove(item)
         self.consumers.extend(to_add)
 
-    @staticmethod
-    def prefix_msg_wrapper(msg):
+    def prefix_msg_wrapper(self, msg):
         return "[planting] %s" % msg
 
 

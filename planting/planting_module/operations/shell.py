@@ -4,25 +4,25 @@
 from planting_module import ModuleBase
 
 
-class Move(ModuleBase):
+class Shell(ModuleBase):
     def __init__(self):
-        super(Move, self).__init__()
+        super(Shell, self).__init__()
 
-    def build_tasks(self, src, dest):
+    def build_tasks(self, command):
         self._tasks = [dict(
             action=dict(
                 module='shell',
-                args='mv ' + src + ' ' + dest)
+                args=command)
         )]
 
     def output_field(self):
-        self._output = 'changed'
+        self._output = 'stdout'
 
     def register_machine(self, machine):
         self._env = machine._env
         self._planting = machine._planting
-        machine.move = self
+        machine.shell = self
 
-    def __call__(self, src, dest):
-        self.build_tasks(src, dest)
-        self.play()
+    def __call__(self, command):
+        self.build_tasks(command)
+        return self.play()

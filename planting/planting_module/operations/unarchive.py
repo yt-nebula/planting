@@ -4,15 +4,15 @@
 from planting_module import ModuleBase
 
 
-class Move(ModuleBase):
+class Unarchive(ModuleBase):
     def __init__(self):
-        super(Move, self).__init__()
+        super(Unarchive, self).__init__()
 
     def build_tasks(self, src, dest):
         self._tasks = [dict(
             action=dict(
-                module='shell',
-                args='mv ' + src + ' ' + dest)
+                module='unarchive',
+                args=dict(src=src, dest=dest, remote_src="yes"))
         )]
 
     def output_field(self):
@@ -21,8 +21,8 @@ class Move(ModuleBase):
     def register_machine(self, machine):
         self._env = machine._env
         self._planting = machine._planting
-        machine.move = self
+        machine.unarchive = self
 
     def __call__(self, src, dest):
         self.build_tasks(src, dest)
-        self.play()
+        return self.play()

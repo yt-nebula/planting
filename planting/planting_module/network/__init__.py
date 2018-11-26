@@ -1,11 +1,17 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-from planting.planting_api_v1 import Environment
-from planting.planting_module import ModuleBase
-from planting.planting_api_v1 import PlantingApi
+import os
+import pkgutil
+
+pkgpath = os.path.dirname(__file__)
+pkgname = os.path.basename(pkgpath)
+
+for _, file, _ in pkgutil.iter_modules([pkgpath]):
+    __import__('planting_module.' + pkgname+'.'+file)
+    
+    
 
 
-class Network(ModuleBase):
-    def __init__(self, env: Environment):
-        super(Network, self).__init__(env)
+
+
