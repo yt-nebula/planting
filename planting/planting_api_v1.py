@@ -128,4 +128,4 @@ class PlantingApi(object):
         self.results_callback.success = True
 
     def result(self):
-return self.results_callback.success
+        return self.results_callback.success
