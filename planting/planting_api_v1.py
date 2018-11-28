@@ -1,6 +1,14 @@
 #!/usr/bin/env python
 # encoding: utf-8
+<<<<<<< HEAD
 import json
+=======
+"""
+@author: rfkimi
+@file: planting_api_v1.py
+"""
+import sys
+>>>>>>> origin/develop
 from collections import namedtuple
 
 from ansible.parsing.dataloader import DataLoader
@@ -8,9 +16,13 @@ from ansible.vars.manager import VariableManager
 from ansible.inventory.manager import InventoryManager
 from ansible.inventory.host import Host
 from ansible.playbook.play import Play
+from ansible.inventory.host import Host
 from ansible.executor.task_queue_manager import TaskQueueManager
-from ansible.plugins.callback import CallbackBase
 
+from collections import defaultdict
+from callback_json import ResultCallback
+from logger import logger
+from environment import Environment
 
 Options = namedtuple('Options',
                      ['connection',
@@ -33,6 +45,7 @@ Options = namedtuple('Options',
                       'diff'])
 
 
+<<<<<<< HEAD
 # return the command result
 class ResultCallback(CallbackBase):
     def __init__(self, *args, **kwargs):
@@ -54,6 +67,11 @@ class ResultCallback(CallbackBase):
 class Machine(object):
     def __init__(self, ip, username=None, password=None, port='22'):
         self.ops = Options(connection='ssh',
+=======
+class PlantingApi(object):
+    def __init__(self, env: Environment):
+        self.ops = Options(connection='smart',
+>>>>>>> origin/develop
                            remote_user=None,
                            ack_pass=None,
                            sudo_user=None,
@@ -73,8 +91,9 @@ class Machine(object):
                            syntax=None)
         self.loader = DataLoader()
         self.variable_manager = VariableManager()
-        self.passwords = dict()
+        self.passwords = {"conn_pass": env.password}
         self.results_callback = ResultCallback()
+<<<<<<< HEAD
         self.inventory = InventoryManager(loader=self.loader)
         self.variable_manager = VariableManager(loader=self.loader, inventory=self.inventory)
         host_info = Host(name=ip, port=port)
@@ -105,6 +124,29 @@ class Machine(object):
             json: result return
 
         """
+=======
+        self.logger = logger
+        level = logger.DEBUG
+        complete_log = []
+        logger.add_consumers(
+            (logger.VERBOSE_DEBUG, sys.stdout),
+            (level, complete_log.append)
+        )
+        # after ansible 2.3 need parameter 'sources'
+        # create inventory, use path to host config file
+        # as source or hosts in a comma separated string
+        self.inventory = InventoryManager(
+            loader=self.loader, sources=env.ip+',')
+        self.variable_manager = VariableManager(
+            loader=self.loader, inventory=self.inventory)
+        host_info = Host(name=env.ip, port='22')
+        self.variable_manager.set_host_variable(
+            host_info, 'ansible_user', env.remote_user)
+        self.variable_manager.set_host_variable(
+            host_info, 'ansible_pass', env.password)
+
+    def run_planting(self, host_list, task_list):
+>>>>>>> origin/develop
         play_source = dict(
             name="Planting Play",
             hosts=self.host_pattern,
@@ -122,29 +164,33 @@ class Machine(object):
                 options=self.ops,
                 passwords=self.passwords
             )
+            self.clear_callback()
             tqm._stdout_callback = self.results_callback
             tqm.run(play)
         finally:
             if tqm is not None:
                 tqm.cleanup()
 
-        results_raw = dict()
-        results_raw['success'] = dict()
-        results_raw['failed'] = dict()
-        results_raw['unreachable'] = dict()
+    def print_info(self, field):
+        for host in self.results_callback.host_ok:
+            for task in self.results_callback.host_ok[host]:
+                self.logger.info(host + ":\n" + str(task[field]))
 
-        for host, result in self.results_callback.host_ok.items():
-            results_raw['success'][host] = json.dumps(result._result)
+        for host in self.results_callback.host_unreachable:
+            for task in self.results_callback.host_unreachable[host]:
+                self.logger.error(host + ":\n" + task['msg'])
 
-        for host, result in self.results_callback.host_failed.items():
-            results_raw['failed'][host] = result._result['msg']
+        for host in self.results_callback.host_failed:
+            for task in self.results_callback.host_failed[host]:
+                self.logger.error(host + ":\n" + task['msg'])
 
-        for host, result in self.results_callback.host_unreachable.items():
-            results_raw['unreachable'][host] = result._result['msg']
+    def clear_callback(self):
+        self.results_callback.host_unreachable = defaultdict(list)
+        self.results_callback.host_failed = defaultdict(list)
+        self.results_callback.host_ok = defaultdict(list)
+        self.results_callback.success = True
 
-        print(results_raw)
-
-
+<<<<<<< HEAD
 if __name__ == "__main__":
     node1 = Machine(ip='127.0.0.1', username="aaa", password="1234567", port='22')
     tasks = [
@@ -154,3 +200,7 @@ if __name__ == "__main__":
     node1.Network.port(port=['22'])
     node1.Network.process(process=['java', 'tomcat'])
     node1.File.copy(path='path', dest='dest')
+=======
+    def result(self):
+        return self.results_callback.success
+>>>>>>> origin/develop

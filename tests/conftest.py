@@ -9,6 +9,6 @@ def dokcer_machine(self, request):
     self.docker = start_docker()
 
     def fin():
-        kill_docker(self.dokcer.docker_id)
+        kill_docker(self.docker.docker_id)
 
     request.addfinalizer(fin)

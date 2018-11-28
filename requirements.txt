@@ -1,5 +1,10 @@
 ansible==2.5.0
+<<<<<<< HEAD
 # test required
 docker==3.5.1
 pytest==3.6.0
 assertpy==0.13
+=======
+docker==3.5.1
+colorama
+>>>>>>> origin/develop
