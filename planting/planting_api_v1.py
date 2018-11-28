@@ -1,16 +1,12 @@
 #!/usr/bin/env python
 # encoding: utf-8
-"""
-@author: rfkimi
-@file: planting_api_v1.py
-"""
+
 import sys
 from collections import namedtuple
 
 from ansible.parsing.dataloader import DataLoader
 from ansible.vars.manager import VariableManager
 from ansible.inventory.manager import InventoryManager
-from ansible.inventory.host import Host
 from ansible.playbook.play import Play
 from ansible.inventory.host import Host
 from ansible.executor.task_queue_manager import TaskQueueManager
@@ -88,11 +84,13 @@ class PlantingApi(object):
     def run_planting(self, host_list, task_list):
         play_source = dict(
             name="Planting Play",
-            hosts=self.host_pattern,
+            hosts=host_list,
             gather_facts='no',
             tasks=task_list
         )
-        play = Play().load(play_source, variable_manager=self.variable_manager, loader=self.loader)
+        play = Play().load(
+            play_source, variable_manager=self.variable_manager,
+            loader=self.loader)
 
         tqm = None
         try:
@@ -130,4 +128,4 @@ class PlantingApi(object):
         self.results_callback.success = True
 
     def result(self):
-        return self.results_callback.success
+return self.results_callback.success
