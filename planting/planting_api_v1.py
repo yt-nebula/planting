@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
-"""
-@author: rfkimi
-@file: planting_api_v1.py
-"""
+
 import sys
 from collections import namedtuple
 
