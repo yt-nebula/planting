@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import sys
 
 class Environment(object):
-    def __init__(self, ip=None, remote_user=None, password=None):
-        self.password = password
-        self.remote_user = remote_user
-        self.ip = ip
+    def __init__(self, **kwargs):
+        self.password = kwargs['password']
+        self.remote_user = kwargs['remote_user']
+        self.ip = kwargs['ip']
+        self.python = '/usr/bin/python'
+        if 'python' in kwargs:
+            self.python = kwargs['python']

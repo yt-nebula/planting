@@ -11,10 +11,10 @@ class Copy(ModuleBase):
     def build_tasks(self, src, dest):
         self._tasks = [dict(action=dict(
             module='copy',
-            args=dict(src=src, dest=dest)))]
+            args=dict(src=src, dest=dest, remote_src="yes")))]
 
     def output_field(self):
-        self._output = 'msg'
+        self._output = 'changed'
 
     def register_machine(self, machine):
         self._env = machine._env

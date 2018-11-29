@@ -39,9 +39,9 @@ Options = namedtuple('Options',
 
 class PlantingApi(object):
     def __init__(self, env: Environment):
-        self.ops = Options(connection='smart',
+        self.ops = Options(connection='paramiko',
                            remote_user=None,
-                           ack_pass=None,
+                           ack_pass=False,
                            sudo_user=None,
                            forks=5,
                            sudo=None,
@@ -80,6 +80,8 @@ class PlantingApi(object):
             host_info, 'ansible_user', env.remote_user)
         self.variable_manager.set_host_variable(
             host_info, 'ansible_pass', env.password)
+        self.variable_manager.set_host_variable(
+            host_info, 'ansible_python_interpreter', env.python)
 
     def run_planting(self, host_list, task_list):
         play_source = dict(
