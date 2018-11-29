@@ -35,4 +35,5 @@ def machine(image_initialization):
         python='/root/venv/bin/python')
     machine.register_all()
     yield machine
-    # kill_container(container.container_id)
+    
+    kill_container(container.container_id)
