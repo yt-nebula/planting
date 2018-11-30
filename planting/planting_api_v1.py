@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# encoding: utf-8
+# -*- coding: utf -*-
 
 import sys
 from collections import namedtuple
