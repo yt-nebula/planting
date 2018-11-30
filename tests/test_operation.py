@@ -4,9 +4,12 @@ from planting.machine import Machine
 
 
 def test_create(machine: Machine):
-    assert True is machine.create(path="~/test", state="dir")
-    assert True is machine.shell(command="cd ~/test")
-
+    assert True is machine.create(path="~/test1", state="dir")
+    assert True is machine.shell(command="cd ~/test1")
+    assert True is machine.create(path="~/test2", state="mkdir")
+    assert True is machine.shell(command="cd ~/test2")
+    assert True is machine.create(path="~/test3", state="touch")
+    assert True is machine.shell(command="cat ~/test3")
 
 def test_copy(machine: Machine):
     assert True is machine.create(path="~/test.txt", state="file")
@@ -27,3 +30,6 @@ def test_move(machine: Machine):
     assert True is machine.shell(command="ls")
     assert True is machine.move(src="~/test", dest="~/move")
     assert True is machine.shell(command="mv ~/move ~/foo")
+
+def test_pip(machine: Machine):
+    assert True is machine.pip()
