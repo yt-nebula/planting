@@ -3,6 +3,7 @@
 from abc import ABCMeta, abstractmethod
 from planting.planting_api_v1 import PlantingApi
 
+
 class ModuleBase(metaclass=ABCMeta):
     def __init__(self):
         self._tasks = None

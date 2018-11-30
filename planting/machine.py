@@ -12,7 +12,10 @@ from planting.planting_module import operations, network
 class Machine(object):
     def __init__(self, ip=None, remote_user=None, password=None, **kwargs):
         self._env = Environment(
-            ip=ip, remote_user=remote_user, password=password, python=kwargs['python'])
+            ip=ip,
+            remote_user=remote_user,
+            password=password,
+            python=kwargs['python'])
         self.build_planting()
         self.modules = []
 
