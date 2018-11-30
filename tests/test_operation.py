@@ -11,6 +11,7 @@ def test_create(machine: Machine):
     assert True is machine.create(path="~/test3", state="touch")
     assert True is machine.shell(command="cat ~/test3")
 
+
 def test_copy(machine: Machine):
     assert True is machine.create(path="~/test.txt", state="file")
     assert True is machine.copy(src="~/test.txt",
@@ -30,6 +31,3 @@ def test_move(machine: Machine):
     assert True is machine.shell(command="ls")
     assert True is machine.move(src="~/test", dest="~/move")
     assert True is machine.shell(command="mv ~/move ~/foo")
-
-def test_pip(machine: Machine):
-    assert True is machine.pip()
