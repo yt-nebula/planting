@@ -12,7 +12,7 @@ from ansible.plugins.callback import CallbackBase
 from ansible.playbook.play import Play
 from ansible.vars.clean import strip_internal_keys
 
-from logger import Logger
+from planting.logger import Logger
 
 
 def current_time():

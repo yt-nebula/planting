@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-from planting_module import ModuleBase
+from planting.planting_module import ModuleBase
 
 
 class Pip(ModuleBase):
@@ -25,4 +25,4 @@ class Pip(ModuleBase):
 
     def __call__(self, package):
         self.build_tasks(package)
-        self.play()
+        return self.play()

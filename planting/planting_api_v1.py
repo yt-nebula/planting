@@ -3,6 +3,7 @@
 
 import sys
 from collections import namedtuple
+from collections import defaultdict
 
 from ansible.parsing.dataloader import DataLoader
 from ansible.vars.manager import VariableManager
@@ -11,10 +12,9 @@ from ansible.playbook.play import Play
 from ansible.inventory.host import Host
 from ansible.executor.task_queue_manager import TaskQueueManager
 
-from collections import defaultdict
-from callback_json import ResultCallback
-from logger import logger
-from environment import Environment
+from planting.callback_json import ResultCallback
+from planting.logger import logger
+from planting.environment import Environment
 
 Options = namedtuple('Options',
                      ['connection',

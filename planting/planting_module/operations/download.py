@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-from planting_module import ModuleBase
+from planting.planting_module import ModuleBase
 
 
 class Download(ModuleBase):
@@ -23,4 +23,4 @@ class Download(ModuleBase):
 
     def __call__(self, url, dest):
         self.build_tasks(url, dest)
-        self.play()
+        return self.play()

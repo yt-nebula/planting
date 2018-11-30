@@ -20,8 +20,9 @@ def image_initialization(request):
 @pytest.fixture(scope="function")
 def machine(image_initialization):
     container = start_container()
+    # remove old info of local known_hosts
     os.system("ssh-keygen -R " + container.ip)
-    retries = 20
+    retries = 100
     for _ in range(retries):
         output = os.popen("docker top " + container.container_id).read()
         pattern = re.compile(r'sshd')
@@ -35,4 +36,4 @@ def machine(image_initialization):
         python='/root/venv/bin/python')
     machine.register_all()
     yield machine
-    # kill_container(container.container_id)
+    kill_container(container.container_id)
