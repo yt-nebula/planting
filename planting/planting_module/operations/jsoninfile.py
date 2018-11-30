@@ -35,4 +35,4 @@ class Jsoninfile(ModuleBase):
 
     def __call__(self, path: str, keys: list, val):
         self.build_tasks(path, keys, val)
-        self.play()
+        return self.play()
