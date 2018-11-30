@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 from abc import ABCMeta, abstractmethod
-from planting_api_v1 import PlantingApi
+from planting.planting_api_v1 import PlantingApi
 
 class ModuleBase(metaclass=ABCMeta):
     def __init__(self):

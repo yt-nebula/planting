@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 from machine import Machine
-from planting_module import operations
+from planting.planting_module import operations
 
 if __name__ == '__main__':
     #  node.create(path="~/dir", state="dir")

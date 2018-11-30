@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# encoding: utf-8
+# -*- coding: utf -*-
 
 import sys
 from collections import namedtuple
@@ -12,9 +12,9 @@ from ansible.inventory.host import Host
 from ansible.executor.task_queue_manager import TaskQueueManager
 
 from collections import defaultdict
-from callback_json import ResultCallback
-from logger import logger
-from environment import Environment
+from planting.callback_json import ResultCallback
+from planting.logger import logger
+from planting.environment import Environment
 
 Options = namedtuple('Options',
                      ['connection',
