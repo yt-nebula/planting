@@ -13,4 +13,5 @@ if __name__ == '__main__':
 
     # node.fetch(src='~/cluster_config.json', dest='./')
     # node.template(src='./10.40.50.132/home/linuxadmin/cluster_config.json', dest='~/cluster_config.json')
+    node.jsoninfile(path="~/cluster_config.json", keys=["machine_list", 0, "resource_capacity"], val="xxxx")
     node.jsoninfile(path="~/cluster_config.json", keys=["machine_list", 1], val="xxxx")
