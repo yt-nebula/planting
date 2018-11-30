@@ -20,7 +20,7 @@ def test_copy(machine: Machine):
 
 def test_download(machine: Machine):
     assert True is machine.download(
-        url="http://www.runoob.com/wp-content/uploads/" \ 
+        url="http://www.runoob.com/wp-content/uploads/" \
         "2015/10/vi-vim-cheat-sheet-sch.gif",
         dest="~/vim.gif")
     assert True is machine.shell(command="mv ~/vim.gif ~/test.gif")
