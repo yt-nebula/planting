@@ -63,6 +63,10 @@ def test_pip(machine: Machine):
     assert pattern.findall(msg) is not 0
 
 
+def test_process(machine: Machine):
+    assert True is machine.process(process="sleep", stated="started")
+    assert True is machine.shell(command="ps -ef | grep sleep")
+
 # FIXME: can't test in docker due to missing GNU tar
 # def test_unarchive(machine: Machine):
 #     f = tempfile.NamedTemporaryFile()
