@@ -25,16 +25,16 @@ class Jsoninfile(ModuleBase):
         if isinstance(val, dict) or isinstance(val, list):
             val = json.dumps(val)
             shell_jq = "cat {0} | jq \'setpath({1}; {2})\' > {3}/new | " \
-                "mv {3}/new {0}".format(path, key_series, 
+                "mv {3}/new {0}".format(path, key_series,
                                         val, dir_path)
         else:
             if isinstance(val, str):
                 shell_jq = "cat {0} | jq \'setpath({1}; \"{2}\")\' > {3}/new" \
-                    " | mv {3}/new {0}".format(path, key_series, 
+                    " | mv {3}/new {0}".format(path, key_series,
                                                 val, dir_path)
             else:
                 shell_jq = "cat {0} | jq \'setpath({1}; {2})\' > {3}/new | " \
-                    "mv {3}/new {0}".format(path, key_series, 
+                    "mv {3}/new {0}".format(path, key_series,
                                             val, dir_path)
 
         print(shell_jq)
