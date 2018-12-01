@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# encoding: utf-8
+# -*- coding: utf8 -*-
 
 import os
 from planting.planting_module import ModuleBase
