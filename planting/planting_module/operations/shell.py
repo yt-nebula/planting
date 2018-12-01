@@ -18,10 +18,16 @@ class Shell(ModuleBase):
     def output_field(self):
         self._output = 'stdout'
 
+    def get_output(self):
+        self._planting.results_callback
+
     def register_machine(self, machine):
         self._env = machine._env
         self._planting = machine._planting
         machine.shell = self
+
+    def success_message(self):
+        return self._planting.success_message(self._output)
 
     def __call__(self, command):
         self.build_tasks(command)

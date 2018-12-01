@@ -13,7 +13,7 @@ from ansible.inventory.host import Host
 from ansible.executor.task_queue_manager import TaskQueueManager
 
 from planting.callback_json import ResultCallback
-from planting.logger import logger
+from planting.logger import Logger
 from planting.environment import Environment
 
 Options = namedtuple('Options',
@@ -61,11 +61,11 @@ class PlantingApi(object):
         self.variable_manager = VariableManager()
         self.passwords = {"conn_pass": env.password}
         self.results_callback = ResultCallback()
-        self.logger = logger
-        level = logger.DEBUG
+        self.logger = Logger()
+        level = Logger.DEBUG
         complete_log = []
-        logger.add_consumers(
-            (logger.VERBOSE_DEBUG, sys.stdout),
+        self.logger.add_consumers(
+            (Logger.VERBOSE_DEBUG, sys.stdout),
             (level, complete_log.append)
         )
         # after ansible 2.3 need parameter 'sources'
@@ -113,15 +113,22 @@ class PlantingApi(object):
     def print_info(self, field):
         for host in self.results_callback.host_ok:
             for task in self.results_callback.host_ok[host]:
-                self.logger.info(host + ":\n" + str(task[field]))
+                self.logger.info(host + ": " + str(task[field]))
 
         for host in self.results_callback.host_unreachable:
             for task in self.results_callback.host_unreachable[host]:
-                self.logger.error(host + ":\n" + task['msg'])
+                self.logger.error(host + ": " + task['msg'])
 
         for host in self.results_callback.host_failed:
             for task in self.results_callback.host_failed[host]:
-                self.logger.error(host + ":\n" + task['msg'])
+                self.logger.error(host + ": " + task['msg'])
+
+    # TODO: only first message will return
+    def success_message(self, field):
+        for host in self.results_callback.host_ok:
+            for task in self.results_callback.host_ok[host]:
+                return str(task[field])
+        return ""
 
     def clear_callback(self):
         self.results_callback.host_unreachable = defaultdict(list)

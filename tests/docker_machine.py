@@ -21,7 +21,7 @@ def start_image():
 
 def start_container():
     client = docker.from_env()
-    container = client.containers.run("eugenes1/python-sshd", detach=True)
+    container = client.containers.run("eugenes1/python-sshd:3.6", detach=True)
     status = client.containers.get(container.short_id)
     docker_machine = Container(
         ip=status.attrs['NetworkSettings']['IPAddress'],
