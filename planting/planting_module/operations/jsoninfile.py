@@ -4,6 +4,8 @@
 import os
 from planting.planting_module import ModuleBase
 from functools import reduce
+import json
+
 
 class Jsoninfile(ModuleBase):
 
@@ -20,9 +22,21 @@ class Jsoninfile(ModuleBase):
         key_series = reduce(str_splice, keys)
         key_series = '[' + key_series + ']'
         dir_path = os.path.dirname(path)
-        shell_jq = "cat {0} | jq \'setpath({1}; \"{2}\")\' > {3}/new | " \
-                    "mv {3}/new {0}".format(
-                                        path, key_series, val, dir_path)
+        if isinstance(val, dict) or isinstance(val, list):
+            val = json.dumps(val)
+            shell_jq = "cat {0} | jq \'setpath({1}; {2})\' > {3}/new | " \
+                        "mv {3}/new {0}".format(
+                                            path, key_series, val, dir_path)
+        else:
+            if isinstance(val, str):
+                shell_jq = "cat {0} | jq \'setpath({1}; \"{2}\")\' > {3}/new | " \
+                            "mv {3}/new {0}".format(
+                                                path, key_series, val, dir_path)
+            else:
+                shell_jq = "cat {0} | jq \'setpath({1}; {2})\' > {3}/new | " \
+                            "mv {3}/new {0}".format(
+                                                path, key_series, val, dir_path)
+
         print(shell_jq)
         self._tasks = [dict(action=dict(
             module='shell',
