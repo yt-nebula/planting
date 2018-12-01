@@ -5,6 +5,13 @@ from planting.planting_module import ModuleBase
 
 
 class Remove(ModuleBase):
+    """
+
+    delete file or directory
+
+    Args:
+        src(str): source file
+    """
     def __init__(self):
         super(Remove, self).__init__()
 

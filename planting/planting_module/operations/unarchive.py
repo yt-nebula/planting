@@ -5,6 +5,14 @@ from planting.planting_module import ModuleBase
 
 
 class Unarchive(ModuleBase):
+    """
+
+    unarchive file
+
+    Args:
+        src(str): source file path
+        dest(str): destination file
+    """
     def __init__(self):
         super(Unarchive, self).__init__()
 

@@ -5,6 +5,14 @@ from planting.planting_module import ModuleBase
 
 
 class Download(ModuleBase):
+    """
+
+    download file
+
+    Args:
+        url(str): source file
+        dest(str): destination path
+    """
     def __init__(self):
         super(Download, self).__init__()
 
