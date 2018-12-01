@@ -23,7 +23,7 @@ class Process(ModuleBase):
         )]
 
     def output_field(self):
-        self._output = 'msg'
+        self._output = 'changed'
 
     def register_machine(self, machine):
         self._env = machine._env
