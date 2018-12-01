@@ -64,7 +64,7 @@ def test_pip(machine: Machine):
 
 
 def test_process(machine: Machine):
-    assert True is machine.process(process="http", state="restarted")
+    assert True is machine.process(process="httpd", state="restarted")
     assert True is machine.shell(command="ps -ef | grep sleep")
 
 # FIXME: can't test in docker due to missing GNU tar
