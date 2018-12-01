@@ -5,7 +5,6 @@ import time
 import re
 
 import pytest
-import docker
 
 
 from tests.docker_machine import start_image, kill_container, start_container

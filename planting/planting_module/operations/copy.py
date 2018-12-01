@@ -8,10 +8,10 @@ class Copy(ModuleBase):
     def __init__(self):
         super(Copy, self).__init__()
 
-    def build_tasks(self, src, dest, remote_src):
+    def build_tasks(self, src, dest):
         self._tasks = [dict(action=dict(
             module='copy',
-            args=dict(src=src, dest=dest, remote_src=remote_src)))]
+            args=dict(src=src, dest=dest, mode="preserve")))]
 
     def output_field(self):
         self._output = 'changed'
@@ -21,6 +21,6 @@ class Copy(ModuleBase):
         self._planting = machine._planting
         machine.copy = self
 
-    def __call__(self, src, dest, remote_src):
-        self.build_tasks(src, dest, remote_src)
+    def __call__(self, src, dest):
+        self.build_tasks(src, dest)
         return self.play()

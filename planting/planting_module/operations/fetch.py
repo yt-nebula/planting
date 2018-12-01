@@ -13,7 +13,7 @@ class Fetch(ModuleBase):
             args=dict(src=src, dest=dest)))]
 
     def output_field(self):
-        self._output = 'msg'
+        self._output = 'changed'
 
     def register_machine(self, machine):
         self._env = machine._env

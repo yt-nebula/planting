@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
+
+import os
+import re
+import tempfile
+
 from planting.machine import Machine
 
 
@@ -12,10 +17,22 @@ def test_create(machine: Machine):
 
 
 def test_copy(machine: Machine):
-    assert True is machine.create(path="~/test.txt", state="file")
-    assert True is machine.copy(src="~/test.txt",
-                                dest="~/test_bak.txt", remote_src="yes")
-    assert True is machine.shell(command="mv ~/test_bak.txt ~/temp")
+    with tempfile.NamedTemporaryFile() as f:
+        f.write(b'Hello World!')
+        f.seek(0)
+        assert True is machine.copy(src=f.name, dest="/root/test.txt")
+    assert True is machine.shell(command="cat /root/test.txt")
+    assert True is machine.shell(command="mv /root/test.txt /root/temp")
+
+
+def test_fetch(machine: Machine):
+    assert True is machine.shell(command='''echo "Hello" >> ~/1.txt''')
+    with tempfile.TemporaryDirectory() as tmpDir:
+        assert True is machine.fetch(src="/root/1.txt", dest=tmpDir)
+        res = os.popen('cat ' + tmpDir + "/" +
+                       machine.ip + "/root/1.txt").read()
+        print(res)
+        assert res is not ""
 
 
 def test_download(machine: Machine):
@@ -28,6 +45,31 @@ def test_download(machine: Machine):
 
 def test_move(machine: Machine):
     assert True is machine.create(path="~/test", state="file")
-    assert True is machine.shell(command="ls")
     assert True is machine.move(src="~/test", dest="~/move")
     assert True is machine.shell(command="mv ~/move ~/foo")
+
+
+def test_remove(machine: Machine):
+    assert True is machine.create(path="~/test", state="file")
+    assert True is machine.remove(src="~/test")
+    assert False is machine.shell(command="mv ~/test ~/test.txt")
+
+
+def test_pip(machine: Machine):
+    assert True is machine.pip(package="six", executable="/root/venv/bin/pip")
+    assert True is machine.shell(command="/root/venv/bin/pip show six")
+    msg = machine.shell.success_message()
+    pattern = re.compile(r"Name: six")
+    assert pattern.findall(msg) is not 0
+
+
+# FIXME: can't test in docker due to missing GNU tar
+# def test_unarchive(machine: Machine):
+#     f = tempfile.NamedTemporaryFile()
+#     f.write(b'Hello World!')
+#     f.seek(0)
+#     # compress file
+#     with tarfile.open("test.tar.gz", "w:gz") as tar:
+#         tar.add(f.name)
+#     assert True is machine.unarchive(src=tar.name, dest="/root/")
+#     f.close()
