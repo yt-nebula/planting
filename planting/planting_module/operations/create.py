@@ -11,7 +11,8 @@ class Create(ModuleBase):
 
     Args:
         path(str): path of created file or directory
-        state(str): create file when state = ‘file’，create directory when state = ‘dir’
+        state(str): create file when state = ‘file’，
+                    create directory when state = ‘dir’
     """
     def __init__(self):
         super(Create, self).__init__()
