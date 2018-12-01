@@ -2,8 +2,6 @@
 # -*- coding: utf8 -*-
 import os
 os.sys.path.append('/Users/panjianlong/github/planting/')
-
-
 from machine import Machine
 from planting.planting_module import operations
 
