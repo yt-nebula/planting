@@ -6,6 +6,7 @@ from planting_module import ModuleBase
 from functools import reduce
 
 class Jsoninfile(ModuleBase):
+
     def __init__(self):
         super(Jsoninfile, self).__init__()
 
@@ -19,7 +20,8 @@ class Jsoninfile(ModuleBase):
         key_series = reduce(str_splice, keys)
         key_series = '[' + key_series + ']'
         dir_path = os.path.dirname(path)
-        shell_jq = "cat {0} | jq \'setpath({1}; \"{2}\")\' > {3}/new | mv {3}/new {0}".format(path, key_series, val, dir_path)
+        shell_jq = "cat {0} | jq \'setpath({1}; \"{2}\")\' > {3}/new | mv {3}/new {0}".format(
+            path, key_series, val, dir_path)
         self._tasks = [dict(action=dict(
             module='shell',
             args=shell_jq)
