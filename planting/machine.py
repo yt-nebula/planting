@@ -1,21 +1,21 @@
 #!/usr/bin/env python
-# encoding: utf-8
+# -*- coding: utf8 -*-
 
-import sys
-import os
-import pkgutil
 import inspect
 
-from planting_api_v1 import PlantingApi
-from environment import Environment
-from planting_module import ModuleBase
-from planting_module import operations, network
+from planting.planting_api_v1 import PlantingApi
+from planting.environment import Environment
+from planting.planting_module import ModuleBase
+from planting.planting_module import operations, network
 
 
 class Machine(object):
-    def __init__(self, ip=None, remote_user=None, password=None):
+    def __init__(self, ip=None, remote_user=None, password=None, **kwargs):
         self._env = Environment(
-            ip=ip, remote_user=remote_user, password=password)
+            ip=ip,
+            remote_user=remote_user,
+            password=password,
+            python=kwargs['python'])
         self.build_planting()
         self.modules = []
 

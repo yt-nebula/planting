@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-# encoding: utf-8
-from planting_module import ModuleBase
+# -*- coding: utf8 -*-
+from planting.planting_module import ModuleBase
 
 
 class Process(ModuleBase):

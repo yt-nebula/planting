@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# encoding: utf-8
+# -*- coding: utf8 -*-
 
 import copy
 import os
@@ -12,7 +12,7 @@ from ansible.plugins.callback import CallbackBase
 from ansible.playbook.play import Play
 from ansible.vars.clean import strip_internal_keys
 
-from logger import Logger
+from planting.logger import Logger
 
 
 def current_time():
@@ -147,7 +147,7 @@ class ResultCallback(CallbackBase):
         self.results[-1]['tasks'][-1]['task']['duration']['end'] = end_time
         self.results[-1]['play']['duration']['end'] = end_time
         self._logger.error(json.dumps({host.name: self.results[-1]}, indent=4))
-        self.host_unreachable[result._host.get_name()].append(clean_result)  
+        self.host_unreachable[result._host.get_name()].append(clean_result)
         self.success = False
 
     v2_runner_on_skipped = v2_runner_on_ok

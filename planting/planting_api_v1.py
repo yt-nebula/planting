@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-# encoding: utf-8
+# -*- coding: utf -*-
 
 import sys
 from collections import namedtuple
+from collections import defaultdict
 
 from ansible.parsing.dataloader import DataLoader
 from ansible.vars.manager import VariableManager
@@ -11,10 +12,9 @@ from ansible.playbook.play import Play
 from ansible.inventory.host import Host
 from ansible.executor.task_queue_manager import TaskQueueManager
 
-from collections import defaultdict
-from callback_json import ResultCallback
-from logger import logger
-from environment import Environment
+from planting.callback_json import ResultCallback
+from planting.logger import logger
+from planting.environment import Environment
 
 Options = namedtuple('Options',
                      ['connection',
@@ -39,9 +39,9 @@ Options = namedtuple('Options',
 
 class PlantingApi(object):
     def __init__(self, env: Environment):
-        self.ops = Options(connection='smart',
+        self.ops = Options(connection='paramiko',
                            remote_user=None,
-                           ack_pass=None,
+                           ack_pass=False,
                            sudo_user=None,
                            forks=5,
                            sudo=None,
@@ -80,6 +80,8 @@ class PlantingApi(object):
             host_info, 'ansible_user', env.remote_user)
         self.variable_manager.set_host_variable(
             host_info, 'ansible_pass', env.password)
+        self.variable_manager.set_host_variable(
+            host_info, 'ansible_python_interpreter', env.python)
 
     def run_planting(self, host_list, task_list):
         play_source = dict(
