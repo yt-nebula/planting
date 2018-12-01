@@ -113,15 +113,22 @@ class PlantingApi(object):
     def print_info(self, field):
         for host in self.results_callback.host_ok:
             for task in self.results_callback.host_ok[host]:
-                self.logger.info(host + ":\n" + str(task[field]))
+                self.logger.info(host + ": " + str(task[field]))
 
         for host in self.results_callback.host_unreachable:
             for task in self.results_callback.host_unreachable[host]:
-                self.logger.error(host + ":\n" + task['msg'])
+                self.logger.error(host + ": " + task['msg'])
 
         for host in self.results_callback.host_failed:
             for task in self.results_callback.host_failed[host]:
-                self.logger.error(host + ":\n" + task['msg'])
+                self.logger.error(host + ": " + task['msg'])
+
+    # TODO: only first message will return
+    def success_message(self, field):
+        for host in self.results_callback.host_ok:
+            for task in self.results_callback.host_ok[host]:
+                return str(task[field])
+        return ""
 
     def clear_callback(self):
         self.results_callback.host_unreachable = defaultdict(list)

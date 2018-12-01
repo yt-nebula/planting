@@ -2,6 +2,7 @@
 # -*- coding: utf8 -*-
 
 import os
+import re
 import tempfile
 
 from planting.machine import Machine
@@ -44,6 +45,31 @@ def test_download(machine: Machine):
 
 def test_move(machine: Machine):
     assert True is machine.create(path="~/test", state="file")
-    assert True is machine.shell(command="ls")
     assert True is machine.move(src="~/test", dest="~/move")
     assert True is machine.shell(command="mv ~/move ~/foo")
+
+
+def test_remove(machine: Machine):
+    assert True is machine.create(path="~/test", state="file")
+    assert True is machine.remove(src="~/test")
+    assert False is machine.shell(command="mv ~/test ~/test.txt")
+
+
+def test_pip(machine: Machine):
+    assert True is machine.pip(package="six", executable="/root/venv/bin/pip")
+    assert True is machine.shell(command="/root/venv/bin/pip show six")
+    msg = machine.shell.success_message()
+    pattern = re.compile(r"Name: six")
+    assert pattern.findall(msg) is not 0
+
+
+# FIXME: can't test in docker due to missing GNU tar
+# def test_unarchive(machine: Machine):
+#     f = tempfile.NamedTemporaryFile()
+#     f.write(b'Hello World!')
+#     f.seek(0)
+#     # compress file
+#     with tarfile.open("test.tar.gz", "w:gz") as tar:
+#         tar.add(f.name)
+#     assert True is machine.unarchive(src=tar.name, dest="/root/")
+#     f.close()

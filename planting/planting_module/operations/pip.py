@@ -8,11 +8,11 @@ class Pip(ModuleBase):
     def __init__(self):
         super(Pip, self).__init__()
 
-    def build_tasks(self, package):
+    def build_tasks(self, package, executable):
         self._tasks = [dict(
             action=dict(
-                module='shell',
-                args='pip install ' + package)
+                module='pip',
+                args=dict(name=package, executable=executable))
         )]
 
     def output_field(self):
@@ -23,6 +23,6 @@ class Pip(ModuleBase):
         self._planting = machine._planting
         machine.pip = self
 
-    def __call__(self, package):
-        self.build_tasks(package)
+    def __call__(self, package, executable):
+        self.build_tasks(package, executable)
         return self.play()

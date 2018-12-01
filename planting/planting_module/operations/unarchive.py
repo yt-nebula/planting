@@ -12,7 +12,7 @@ class Unarchive(ModuleBase):
         self._tasks = [dict(
             action=dict(
                 module='unarchive',
-                args=dict(src=src, dest=dest, remote_src="yes"))
+                args=dict(src=src, dest=dest))
         )]
 
     def output_field(self):

@@ -35,7 +35,5 @@ def machine(image_initialization):
         password=container.password,
         python='/root/venv/bin/python')
     machine.register_all()
-    print("setUp")
     yield machine
-    print("teardown")
     kill_container(container.container_id)
