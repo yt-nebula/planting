@@ -17,6 +17,7 @@ def image_initialization(request):
     start_image()
     os.environ['ANSIBLE_HOST_KEY_CHECKING'] = 'False'
 
+
 @pytest.fixture(scope="function")
 def machine(image_initialization):
     container = start_container()
@@ -35,5 +36,7 @@ def machine(image_initialization):
         password=container.password,
         python='/root/venv/bin/python')
     machine.register_all()
+    print("setUp")
     yield machine
+    print("teardown")
     kill_container(container.container_id)

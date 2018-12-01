@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # encoding: utf-8
+import os
+import tempfile
+
 from planting.machine import Machine
 
 
@@ -9,10 +12,22 @@ def test_create(machine: Machine):
 
 
 def test_copy(machine: Machine):
-    assert True is machine.create(path="~/test.txt", state="file")
-    assert True is machine.copy(src="~/test.txt",
-                                dest="~/test_bak.txt", remote_src="yes")
-    assert True is machine.shell(command="mv ~/test_bak.txt ~/temp")
+    with tempfile.NamedTemporaryFile() as f:
+        f.write(b'Hello World!')
+        f.seek(0)
+        assert True is machine.copy(src=f.name, dest="/root/test.txt")
+    assert True is machine.shell(command="cat /root/test.txt")
+    assert True is machine.shell(command="mv /root/test.txt /root/temp")
+
+
+def test_fetch(machine: Machine):
+    assert True is machine.shell(command='''echo "Hello" >> ~/1.txt''')
+    with tempfile.TemporaryDirectory() as tmpDir:
+        assert True is machine.fetch(src="/root/1.txt", dest=tmpDir)
+        res = os.popen('cat ' + tmpDir + "/" +
+                       machine.ip + "/root/1.txt").read()
+        print(res)
+        assert res is not ""
 
 
 def test_download(machine: Machine):

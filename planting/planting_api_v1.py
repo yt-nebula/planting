@@ -13,7 +13,7 @@ from ansible.inventory.host import Host
 from ansible.executor.task_queue_manager import TaskQueueManager
 
 from planting.callback_json import ResultCallback
-from planting.logger import logger
+from planting.logger import Logger
 from planting.environment import Environment
 
 Options = namedtuple('Options',
@@ -61,11 +61,11 @@ class PlantingApi(object):
         self.variable_manager = VariableManager()
         self.passwords = {"conn_pass": env.password}
         self.results_callback = ResultCallback()
-        self.logger = logger
-        level = logger.DEBUG
+        self.logger = Logger()
+        level = Logger.DEBUG
         complete_log = []
-        logger.add_consumers(
-            (logger.VERBOSE_DEBUG, sys.stdout),
+        self.logger.add_consumers(
+            (Logger.VERBOSE_DEBUG, sys.stdout),
             (level, complete_log.append)
         )
         # after ansible 2.3 need parameter 'sources'
