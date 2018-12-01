@@ -4,3 +4,4 @@ colorama
 docker==3.5.1
 pytest==3.6.0
 assertpy==0.13
+pycodestyle

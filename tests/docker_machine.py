@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# encoding: utf-8
+# -*- coding: utf8 -*-
 
 import docker
 
@@ -24,7 +24,7 @@ def start_container():
     container = client.containers.run("eugenes1/python-sshd", detach=True)
     status = client.containers.get(container.short_id)
     docker_machine = Container(
-        ip=status.attrs['NetworkSettings']['IPAddress'], 
+        ip=status.attrs['NetworkSettings']['IPAddress'],
         username="root",
         password="root",
         container_id=container.short_id)

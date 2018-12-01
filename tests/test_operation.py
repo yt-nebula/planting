@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-# encoding: utf-8
+# -*- coding: utf8 -*-
+
 import os
 import tempfile
 
@@ -7,8 +8,11 @@ from planting.machine import Machine
 
 
 def test_create(machine: Machine):
-    assert True is machine.create(path="~/test", state="dir")
-    assert True is machine.shell(command="cd ~/test")
+    assert True is machine.create(path="~/test1", state="dir")
+    assert True is machine.shell(command="cd ~/test1")
+
+    assert True is machine.create(path="~/test2", state="touch")
+    assert True is machine.shell(command="cat ~/test2")
 
 
 def test_copy(machine: Machine):
@@ -32,7 +36,8 @@ def test_fetch(machine: Machine):
 
 def test_download(machine: Machine):
     assert True is machine.download(
-        url="http://www.runoob.com/wp-content/uploads/2015/10/vi-vim-cheat-sheet-sch.gif",
+        url="http://www.runoob.com/wp-content/uploads/"
+        "2015/10/vi-vim-cheat-sheet-sch.gif",
         dest="~/vim.gif")
     assert True is machine.shell(command="mv ~/vim.gif ~/test.gif")
 
