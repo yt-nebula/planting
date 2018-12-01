@@ -64,7 +64,8 @@ def test_pip(machine: Machine):
 
 
 def test_process(machine: Machine):
-    assert True is machine.process(process="sleep", state="started")
+    assert True is machine.shell(command="sleep 1000&")
+    assert True is machine.process(process="sleep", state="stopped")
     assert True is machine.shell(command="ps -ef | grep sleep")
 
 # FIXME: can't test in docker due to missing GNU tar
