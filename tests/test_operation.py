@@ -8,6 +8,15 @@ import tempfile
 from planting.machine import Machine
 
 
+def test_copy(machine: Machine):
+    with tempfile.NamedTemporaryFile() as f:
+        f.write(b'Hello World!')
+        f.seek(0)
+        assert True is machine.copy(src=f.name, dest="/root/test.txt")
+    assert True is machine.shell(command="cat /root/test.txt")
+    assert True is machine.shell(command="mv /root/test.txt /root/temp")
+
+
 def test_create(machine: Machine):
     assert True is machine.create(path="~/test1", state="dir")
     assert True is machine.shell(command="cd ~/test1")
@@ -16,13 +25,12 @@ def test_create(machine: Machine):
     assert True is machine.shell(command="cat ~/test2")
 
 
-def test_copy(machine: Machine):
-    with tempfile.NamedTemporaryFile() as f:
-        f.write(b'Hello World!')
-        f.seek(0)
-        assert True is machine.copy(src=f.name, dest="/root/test.txt")
-    assert True is machine.shell(command="cat /root/test.txt")
-    assert True is machine.shell(command="mv /root/test.txt /root/temp")
+def test_download(machine: Machine):
+    assert True is machine.download(
+        url="http://www.runoob.com/wp-content/uploads/"
+        "2015/10/vi-vim-cheat-sheet-sch.gif",
+        dest="~/vim.gif")
+    assert True is machine.shell(command="mv ~/vim.gif ~/test.gif")
 
 
 def test_fetch(machine: Machine):
@@ -33,14 +41,6 @@ def test_fetch(machine: Machine):
                        machine.ip + "/root/1.txt").read()
         print(res)
         assert res is not ""
-
-
-def test_download(machine: Machine):
-    assert True is machine.download(
-        url="http://www.runoob.com/wp-content/uploads/"
-        "2015/10/vi-vim-cheat-sheet-sch.gif",
-        dest="~/vim.gif")
-    assert True is machine.shell(command="mv ~/vim.gif ~/test.gif")
 
 
 def test_move(machine: Machine):
@@ -73,3 +73,11 @@ def test_pip(machine: Machine):
 #         tar.add(f.name)
 #     assert True is machine.unarchive(src=tar.name, dest="/root/")
 #     f.close()
+
+# FIXME: can't test in docker due to missing systemctl or service
+# def test_process(machine: Machine):
+#     assert True is machine.process(process="zabbix-agent", state="started")
+#     assert True is machine.shell(command="service zabbix-agent status")
+#     msg = machine.shell.success_message()
+#     pattern = re.compile(r"Active: active")
+#     assert pattern.findall(msg) is not 0
