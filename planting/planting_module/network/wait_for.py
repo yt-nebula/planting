@@ -24,7 +24,7 @@ class WaitFor(ModuleBase):
         )]
 
     def output_field(self):
-        self._output = 'changed'
+        self._output = 'msg'
 
     def get_output(self):
         self._planting.results_callback
@@ -34,9 +34,7 @@ class WaitFor(ModuleBase):
         self._planting = machine._planting
         machine.wait_for = self
 
-    def success_message(self):
-        return self._planting.success_message(self._output)
-
     def __call__(self, port, state, timeout):
         self.build_tasks(port, state, timeout)
-        self.play()
+        self._planting.run_planting([self._env.ip], self._tasks)
+        return self._planting.result()
