@@ -20,16 +20,22 @@ class WaitFor(ModuleBase):
         self._tasks = [dict(
             action=dict(
                 module='wait_for',
-                args=dict(name=port, state=state, timeout=timeout))
+                args=dict(port=port, state=state, timeout=timeout))
         )]
 
     def output_field(self):
         self._output = 'changed'
 
+    def get_output(self):
+        self._planting.results_callback
+
     def register_machine(self, machine):
         self._env = machine._env
         self._planting = machine._planting
         machine.wait_for = self
+
+    def success_message(self):
+        return self._planting.success_message(self._output)
 
     def __call__(self, port, state, timeout):
         self.build_tasks(port, state, timeout)
