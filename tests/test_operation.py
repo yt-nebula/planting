@@ -63,8 +63,8 @@ def test_pip(machine: Machine):
     assert pattern.findall(msg) is not 0
 
 
-def test_waitfor(machine: Machine):
-    assert False is machine.wait_for(port='22', state='started', timeout=10)
+# def test_waitfor(machine: Machine):
+#     assert False is machine.wait_for(port='22', state='started', timeout=10)
 
 # FIXME: can't test in docker due to missing GNU tar
 # def test_unarchive(machine: Machine):
