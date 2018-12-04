@@ -15,13 +15,13 @@ class Container(object):
 
 def start_image():
     client = docker.from_env()
-    if client.images.list(name="eugenes1/python-sshd") is []:
-        client.images.pull("eugenes1/python-sshd")
+    if client.images.list(name="eugenes1/python-sshd:2.7-ubuntu") is []:
+        client.images.pull("eugenes1/python-sshd:2.7-ubuntu")
 
 
 def start_container():
     client = docker.from_env()
-    container = client.containers.run("eugenes1/python-sshd:3.6", detach=True)
+    container = client.containers.run("eugenes1/python-sshd:2.7-ubuntu", detach=True)
     status = client.containers.get(container.short_id)
     docker_machine = Container(
         ip=status.attrs['NetworkSettings']['IPAddress'],
