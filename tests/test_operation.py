@@ -63,6 +63,49 @@ def test_pip(machine: Machine):
     assert pattern.findall(msg) is not 0
 
 
+def test_jsoninfile(machine: Machine):
+    template_raw = b'''{
+    "master":{
+        "id": 1,
+        "ip": "xxx",
+        "usr": ["a", "b"]
+    }        
+}
+'''
+    template_change = b'''{
+    "master":{
+        "id": 2,
+        "ip": "xxx",
+        "usr": ["a", "b"]
+    }        
+}
+'''
+    with tempfile.NamedTemporaryFile() as f:
+        f.write(template_raw)
+        f.seek(0)
+        assert True is node.copy(src=f.name, dest="~/test_raw")
+    assert True is node.jsoninfile(path="~/test_raw", keys=["master", "id"], val=2)
+
+    with tempfile.NamedTemporaryFile() as f:
+        f.write(template_change)
+        f.seek(0)
+        assert True is node.copy(src=f.name, dest="~/test_change")
+
+    assert True is node.shell(command="jq '.master|.id' ~/test_raw > ~/awf")
+    assert True is node.shell(command="jq '.master|.id' ~/test_change > ~/bxg")
+
+    assert True is node.shell(command="diff ~/awf ~/bxg > ~/diffjson")
+    
+    with tempfile.TemporaryDirectory() as tmpDir:
+        assert True is node.fetch(src="/root/diffjson", dest=tmpDir)
+        res = os.popen('cat ' + tmpDir + "/" +
+                       node.ip + "/root/diffjson").read()
+        print(res)
+        assert res is ""
+    
+
+
+
 # FIXME: can't test in docker due to missing GNU tar
 # def test_unarchive(machine: Machine):
 #     f = tempfile.NamedTemporaryFile()
