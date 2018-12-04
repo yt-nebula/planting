@@ -83,24 +83,24 @@ def test_jsoninfile(machine: Machine):
     with tempfile.NamedTemporaryFile() as f:
         f.write(template_raw)
         f.seek(0)
-        assert True is node.copy(src=f.name, dest="~/test_raw")
-    assert True is node.jsoninfile(path="~/test_raw",
+        assert True is machine.copy(src=f.name, dest="~/test_raw")
+    assert True is machine.jsoninfile(path="~/test_raw",
                                    keys=["master", "id"], val=2)
 
     with tempfile.NamedTemporaryFile() as f:
         f.write(template_change)
         f.seek(0)
-        assert True is node.copy(src=f.name, dest="~/test_change")
+        assert True is machine.copy(src=f.name, dest="~/test_change")
 
-    assert True is node.shell(command="jq '.master|.id' ~/test_raw > ~/awf")
-    assert True is node.shell(command="jq '.master|.id' ~/test_change > ~/bxg")
+    assert True is machine.shell(command="jq '.master|.id' ~/test_raw > ~/awf")
+    assert True is machine.shell(command="jq '.master|.id' ~/test_change > ~/bxg")
 
-    assert True is node.shell(command="diff ~/awf ~/bxg > ~/diffjson")
+    assert True is machine.shell(command="diff ~/awf ~/bxg > ~/diffjson")
 
     with tempfile.TemporaryDirectory() as tmpDir:
-        assert True is node.fetch(src="/root/diffjson", dest=tmpDir)
+        assert True is machine.fetch(src="/root/diffjson", dest=tmpDir)
         res = os.popen('cat ' + tmpDir + "/" +
-                       node.ip + "/root/diffjson").read()
+                       machine.ip + "/root/diffjson").read()
         print(res)
         assert res is ""
 
