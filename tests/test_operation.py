@@ -85,7 +85,7 @@ def test_jsoninfile(machine: Machine):
         f.seek(0)
         assert True is machine.copy(src=f.name, dest="~/test_raw")
     assert True is machine.jsoninfile(path="~/test_raw",
-                                   keys=["master", "id"], val=2)
+                                      keys=["master", "id"], val=2)
 
     with tempfile.NamedTemporaryFile() as f:
         f.write(template_change)
