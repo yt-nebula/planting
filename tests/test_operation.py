@@ -90,7 +90,7 @@ def test_jsoninfile(machine: Machine):
     with tempfile.NamedTemporaryFile() as f:
         f.write(template_change)
         f.seek(0)
-        assert True is machine.copy(src=f.name, dest="~/test_change")
+        machine.copy(src=f.name, dest="~/test_change")
 
     assert True is machine.shell(command="jq '.master|.id' ~/test_raw > ~/awf")
     assert True is machine.shell(
