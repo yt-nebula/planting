@@ -93,7 +93,8 @@ def test_jsoninfile(machine: Machine):
         assert True is machine.copy(src=f.name, dest="~/test_change")
 
     assert True is machine.shell(command="jq '.master|.id' ~/test_raw > ~/awf")
-    assert True is machine.shell(command="jq '.master|.id' ~/test_change > ~/bxg")
+    assert True is machine.shell(
+        command="jq '.master|.id' ~/test_change > ~/bxg")
 
     assert True is machine.shell(command="diff ~/awf ~/bxg > ~/diffjson")
 
