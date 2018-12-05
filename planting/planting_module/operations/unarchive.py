@@ -13,6 +13,9 @@ class Unarchive(ModuleBase):
         src(str): source file path
 
         dest(str): destination file
+
+    Return:
+        result(bool): execution status
     """
     def __init__(self):
         super(Unarchive, self).__init__()

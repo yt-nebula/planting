@@ -14,6 +14,9 @@ class WaitFor(ModuleBase):
         state(str): started or stopped
 
         timeout(int): the number of timeout
+
+    Return:
+        result(bool): execution status
     """
     def __init__(self):
         super(WaitFor, self).__init__()

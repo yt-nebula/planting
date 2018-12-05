@@ -13,6 +13,9 @@ class Download(ModuleBase):
         url(str): source file
 
         dest(str): destination path
+
+    Return:
+        result(bool): execution status
     """
     def __init__(self):
         super(Download, self).__init__()

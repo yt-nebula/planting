@@ -11,6 +11,9 @@ class Remove(ModuleBase):
 
     Args:
         src(str): source file
+
+    Return:
+        result(bool): execution status
     """
     def __init__(self):
         super(Remove, self).__init__()

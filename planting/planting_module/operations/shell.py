@@ -11,6 +11,9 @@ class Shell(ModuleBase):
 
     Args:
         command(str): bash command
+
+    Return:
+        result(bool): execution status
     """
     def __init__(self):
         super(Shell, self).__init__()

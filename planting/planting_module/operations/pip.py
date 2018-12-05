@@ -13,6 +13,9 @@ class Pip(ModuleBase):
         package(str): package name
 
         executable(str): pip version such as pip-3.3
+
+    Return:
+        result(bool): execution status
     """
     def __init__(self):
         super(Pip, self).__init__()

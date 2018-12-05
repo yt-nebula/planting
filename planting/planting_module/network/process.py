@@ -12,6 +12,9 @@ class Process(ModuleBase):
         process(str): process number
 
         state(str): restarted, started or stopped
+
+    Return:
+        result(bool): execution status
     """
     def __init__(self):
         super(Process, self).__init__()
