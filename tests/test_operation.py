@@ -65,6 +65,9 @@ def test_pip(machine: Machine):
 
 def test_waitfor(machine: Machine):
     assert True is machine.wait_for(port='22', state='started', timeout=10)
+    # FIXME: can't test close port due to missing nginx
+    # machine.shell(command='nginx -c /usr/local/nginx/conf/nginx.conf')
+    # assert True is machine.wait_for(port='80', state='started', timeout=10)
 
 # FIXME: can't test in docker due to missing GNU tar
 # def test_unarchive(machine: Machine):
