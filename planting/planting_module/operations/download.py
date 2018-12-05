@@ -11,6 +11,7 @@ class Download(ModuleBase):
 
     Args:
         url(str): source file
+
         dest(str): destination path
     """
     def __init__(self):

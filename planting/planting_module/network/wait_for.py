@@ -10,7 +10,9 @@ class WaitFor(ModuleBase):
 
     Args:
         port(str): port number
+
         state(str): started or stopped
+
         timeout(int): the number of timeout
     """
     def __init__(self):

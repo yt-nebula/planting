@@ -10,6 +10,7 @@ class Process(ModuleBase):
 
     Args:
         process(str): process number
+
         state(str): restarted, started or stopped
     """
     def __init__(self):

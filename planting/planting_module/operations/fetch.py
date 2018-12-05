@@ -10,6 +10,7 @@ class Fetch(ModuleBase):
 
     Args:
         src(str): remote path
+
         dest(str): local path
     """
     def __init__(self):

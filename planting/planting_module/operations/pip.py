@@ -11,6 +11,7 @@ class Pip(ModuleBase):
 
     Args:
         package(str): package name
+
         executable(str): pip version such as pip-3.3
     """
     def __init__(self):
