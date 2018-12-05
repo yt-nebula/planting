@@ -4,6 +4,14 @@ from planting.planting_module import ModuleBase
 
 
 class Process(ModuleBase):
+    """
+
+    restarted, started or stopped the process
+
+    Args:
+        process(str): process number
+        state(str): restarted, started or stopped
+    """
     def __init__(self):
         super(Process, self).__init__()
 

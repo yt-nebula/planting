@@ -5,6 +5,13 @@ from planting.planting_module import ModuleBase
 
 
 class Shell(ModuleBase):
+    """
+
+    execute bash command
+
+    Args:
+        command(str): bash command
+    """
     def __init__(self):
         super(Shell, self).__init__()
 

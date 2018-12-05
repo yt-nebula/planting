@@ -5,6 +5,14 @@ from planting.planting_module import ModuleBase
 
 
 class Copy(ModuleBase):
+    """
+
+    copy file
+
+    Args:
+        src(str): source file path
+        dest(str): destination path
+    """
     def __init__(self):
         super(Copy, self).__init__()
 

@@ -4,6 +4,14 @@ from planting.planting_module import ModuleBase
 
 
 class Fetch(ModuleBase):
+    """
+
+    copy files from remote machine to local machine
+
+    Args:
+        src(str): remote path
+        dest(str): local path
+    """
     def __init__(self):
         super(Fetch, self).__init__()
 

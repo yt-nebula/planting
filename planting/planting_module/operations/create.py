@@ -5,6 +5,15 @@ from planting.planting_module import ModuleBase
 
 
 class Create(ModuleBase):
+    """
+
+    create the file or directory
+
+    Args:
+        path(str): path of created file or directory
+        state(str): create file when state = ‘file’，
+                    create directory when state = ‘dir’
+    """
     def __init__(self):
         super(Create, self).__init__()
 

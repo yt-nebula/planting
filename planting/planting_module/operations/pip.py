@@ -5,6 +5,14 @@ from planting.planting_module import ModuleBase
 
 
 class Pip(ModuleBase):
+    """
+
+    install python package
+
+    Args:
+        package(str): package name
+        executable(str): pip version such as pip-3.3
+    """
     def __init__(self):
         super(Pip, self).__init__()
 
