@@ -8,12 +8,23 @@ Machine.copy
     :members:
     :show-inheritance:
 
+example.::
+
+    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node.copy(src='~/test.py', dest='~/copy/test.py')
+
 Machine.create
 --------------------------------------------------
 
 .. automodule:: planting.planting_module.operations.create
     :members:
     :show-inheritance:
+
+example.::
+
+    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node.create(path='~/test.py', state='file')
+    node.create(path='~/test', state='dir')
 
 Machine.download
 ----------------------------------------------------
@@ -22,12 +33,21 @@ Machine.download
     :members:
     :show-inheritance:
 
+example.::
+
+    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node.download(url='XXX', dest='/tests/')
+
 Machine.fetch
 -------------------------------------------------
 
 .. automodule:: planting.planting_module.operations.fetch
     :members:
     :show-inheritance:
+
+example.::
+    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node.fetch(src='~/test.py', dest='~/test/)
 
 Machine.jsoninfile
 ------------------------------------------------------
@@ -36,12 +56,22 @@ Machine.jsoninfile
     :members:
     :show-inheritance:
 
+example.::
+
+    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node.jsoninfile()
+
 Machine.move
 ------------------------------------------------
 
 .. automodule:: planting.planting_module.operations.move
     :members:
     :show-inheritance:
+
+example.::
+
+    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node.move(src='~/test.py', dest='~/move/)
 
 Machine.pip
 -----------------------------------------------
@@ -50,12 +80,22 @@ Machine.pip
     :members:
     :show-inheritance:
 
+example.::
+
+    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node.pip(package='ansible', executable='pip-3.3')
+
 Machine.remove
 --------------------------------------------------
 
 .. automodule:: planting.planting_module.operations.remove
     :members:
     :show-inheritance:
+
+example.::
+
+    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node.move(src='~/test.py')
 
 Machine.shell
 -------------------------------------------------
@@ -64,9 +104,19 @@ Machine.shell
     :members:
     :show-inheritance:
 
+example.::
+
+    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node.shell(command='cd ~/test')
+
 Machine.unarchive
 -----------------------------------------------------
 
 .. automodule:: planting.planting_module.operations.unarchive
     :members:
     :show-inheritance:
+
+example.::
+
+    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node.unarchiver(url='XXX', dest='/tests/')

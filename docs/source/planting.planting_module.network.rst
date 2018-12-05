@@ -8,6 +8,11 @@ Machine.process
     :members:
     :show-inheritance:
 
+example.::
+
+    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node.process(process='nginx', state='started')
+
 Machine.wait\_for
 --------------------------------------------------
 
@@ -15,3 +20,7 @@ Machine.wait\_for
     :members:
     :show-inheritance:
 
+example.::
+
+    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node.wait_for(port='22', state='started', timeout=10)
