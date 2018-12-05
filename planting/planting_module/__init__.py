@@ -24,8 +24,11 @@ class ModuleBase(metaclass=ABCMeta):
     def __call__(self):
         pass
 
+    def print_info(self):
+        self._planting.print_info(self._output)
+
     def play(self):
         self.output_field()
         self._planting.run_planting([self._env.ip], self._tasks)
-        self._planting.print_info(self._output)
+        self.print_info()
         return self._planting.result()

@@ -51,6 +51,15 @@ class Jsoninfile(ModuleBase):
         self._planting = machine._planting
         machine.jsoninfile = self
 
+    def print_info(self):
+        res = self._planting.result()
+        if res is True:
+            self._planting.logger.info(
+                "modify {0} json file success".format(self._path))
+        else:
+            self._planting.logger.error("modify failed!")
+    
     def __call__(self, path: str, keys: list, val):
         self.build_tasks(path, keys, val)
+        self._path = path
         return self.play()

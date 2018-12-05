@@ -13,6 +13,7 @@ class Copy(ModuleBase):
         src(str): source file path
         dest(str): destination path
     """
+
     def __init__(self):
         super(Copy, self).__init__()
 
@@ -29,6 +30,15 @@ class Copy(ModuleBase):
         self._planting = machine._planting
         machine.copy = self
 
+    def print_info(self):
+        res = self._planting.result()
+        if res is True:
+            self._planting.logger.info(
+                "copy from {0} to {1} success".format(self._src, self._dest))
+        else:
+            self._planting.logger.error("copy failed!")
+
     def __call__(self, src, dest):
         self.build_tasks(src, dest)
+        self._src, self._dest = src, dest
         return self.play()

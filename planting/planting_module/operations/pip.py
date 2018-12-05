@@ -31,6 +31,15 @@ class Pip(ModuleBase):
         self._planting = machine._planting
         machine.pip = self
 
+    def print_info(self):
+        res = self._planting.result()
+        if res is True:
+            self._planting.logger.info(
+                "pip install {0} success".format(self._package))
+        else:
+            self._planting.logger.error("install failed!")
+
     def __call__(self, package, executable):
         self.build_tasks(package, executable)
+        self._package = package
         return self.play()

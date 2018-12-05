@@ -31,6 +31,15 @@ class Unarchive(ModuleBase):
         self._planting = machine._planting
         machine.unarchive = self
 
+    def print_info(self):
+        res = self._planting.result()
+        if res is True:
+            self._planting.logger.info(
+                "unarchive {0} to {1} success".format(self._src, self._dest))
+        else:
+            self._planting.logger.error("unarchive failed!")
+
     def __call__(self, src, dest):
         self.build_tasks(src, dest)
+        self._src, self._dest = src, dest
         return self.play()

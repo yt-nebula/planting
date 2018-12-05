@@ -30,6 +30,15 @@ class Remove(ModuleBase):
         self._planting = machine._planting
         machine.remove = self
 
+    def print_info(self):
+        res = self._planting.result()
+        if res is True:
+            self._planting.logger.info(
+                "remove {0} success".format(self._src))
+        else:
+            self._planting.logger.error("remove failed!")
+
     def __call__(self, src):
         self.build_tasks(src)
+        self._src = src
         return self.play()

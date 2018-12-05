@@ -36,16 +36,15 @@ class Process(ModuleBase):
         self.print_info(self._planting)
         return self._planting.result()
 
-    def print_info(self, planting):
+    def print_info(self):
+        res = self._planting.result()
+        if res is True:
+            self._planting.logger.info(
+                "unarchive {0} to {1} success".format(self._src, self._dest))
+        else:
+            self._planting.logger.error("unarchive failed!")
+
+    def active_state(self, planting):
         for host in planting.results_callback.host_ok:
             for task in planting.results_callback.host_ok[host]:
-                planting.logger.info(
-                    host + ": " + str(task['status']['ActiveState']))
-
-        for host in planting.results_callback.host_unreachable:
-            for task in planting.results_callback.host_unreachable[host]:
-                planting.logger.error(host + ": " + task['msg'])
-
-        for host in planting.results_callback.host_failed:
-            for task in planting.results_callback.host_failed[host]:
-                planting.logger.error(host + ": " + task['msg'])
+                return task['status']['ActiveState']
