@@ -81,6 +81,8 @@ class PlantingApi(object):
         self.variable_manager.set_host_variable(
             host_info, 'ansible_pass', env.password)
         self.variable_manager.set_host_variable(
+            host_info, 'ansible_sudo_pass', env.password)
+        self.variable_manager.set_host_variable(
             host_info, 'ansible_python_interpreter', env.python)
 
     def run_planting(self, host_list, task_list):
