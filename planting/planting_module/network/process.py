@@ -23,7 +23,7 @@ class Process(ModuleBase):
         )]
 
     def output_field(self):
-        self._output = 'changed'
+        self._output = 'status'
 
     def register_machine(self, machine):
         self._env = machine._env
@@ -32,4 +32,20 @@ class Process(ModuleBase):
 
     def __call__(self, process, state):
         self.build_tasks(process, state)
-        self.play()
+        self._planting.run_planting([self._env.ip], self._tasks)
+        self.print_info(self._planting)
+        return self._planting.result()
+
+    def print_info(self, planting):
+        for host in planting.results_callback.host_ok:
+            for task in planting.results_callback.host_ok[host]:
+                planting.logger.info(
+                    host + ": " + str(task['status']['ActiveState']))
+
+        for host in planting.results_callback.host_unreachable:
+            for task in planting.results_callback.host_unreachable[host]:
+                planting.logger.error(host + ": " + task['msg'])
+
+        for host in planting.results_callback.host_failed:
+            for task in planting.results_callback.host_failed[host]:
+                planting.logger.error(host + ": " + task['msg'])
