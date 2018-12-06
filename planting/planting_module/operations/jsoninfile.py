@@ -55,10 +55,11 @@ class Jsoninfile(ModuleBase):
         res = self._planting.result()
         if res is True:
             self._planting.logger.info(
+                "host {}: ".format(self._env.ip) +
                 "modify {0} json file success".format(self._path))
         else:
             self._planting.logger.error("modify failed!")
-    
+
     def __call__(self, path: str, keys: list, val):
         self.build_tasks(path, keys, val)
         self._path = path

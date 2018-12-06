@@ -32,15 +32,16 @@ class Process(ModuleBase):
 
     def __call__(self, process, state):
         self.build_tasks(process, state)
-        self._planting.run_planting([self._env.ip], self._tasks)
-        self.print_info(self._planting)
-        return self._planting.result()
+        return self.play()
 
     def print_info(self):
         res = self._planting.result()
+        state = self.active_state(self, self._planting)
         if res is True:
             self._planting.logger.info(
-                "unarchive {0} to {1} success".format(self._src, self._dest))
+                "host {}: ".format(self._env.ip) +
+                "handle service success, now active state is {0}"
+                .format(state))
         else:
             self._planting.logger.error("unarchive failed!")
 

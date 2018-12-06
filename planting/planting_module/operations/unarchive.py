@@ -35,6 +35,7 @@ class Unarchive(ModuleBase):
         res = self._planting.result()
         if res is True:
             self._planting.logger.info(
+                "host {}: ".format(self._env.ip) +
                 "unarchive {0} to {1} success".format(self._src, self._dest))
         else:
             self._planting.logger.error("unarchive failed!")

@@ -11,6 +11,7 @@ from planting.planting_module import operations, network
 
 class Machine(object):
     def __init__(self, ip=None, remote_user=None, password=None, **kwargs):
+        # FIXME: remove python parameter when docker image fix
         if 'python' not in kwargs:
             kwargs['python'] = '/usr/bin/python'
         self._env = Environment(

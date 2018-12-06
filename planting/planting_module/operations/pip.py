@@ -35,6 +35,7 @@ class Pip(ModuleBase):
         res = self._planting.result()
         if res is True:
             self._planting.logger.info(
+                "host {}: ".format(self._env.ip) +
                 "pip install {0} success".format(self._package))
         else:
             self._planting.logger.error("install failed!")

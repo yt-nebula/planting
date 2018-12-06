@@ -34,6 +34,7 @@ class Remove(ModuleBase):
         res = self._planting.result()
         if res is True:
             self._planting.logger.info(
+                "host {}: ".format(self._env.ip) +
                 "remove {0} success".format(self._src))
         else:
             self._planting.logger.error("remove failed!")

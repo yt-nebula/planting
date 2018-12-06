@@ -34,7 +34,9 @@ class Download(ModuleBase):
         res = self._planting.result()
         if res is True:
             self._planting.logger.info(
-                "download from url: {0} to {1} success".format(self._url, self._dest))
+                "host {}: ".format(self._env.ip) +
+                "download from url: {0} to {1} success"
+                .format(self._url, self._dest))
         else:
             self._planting.logger.error("download failed!")
 

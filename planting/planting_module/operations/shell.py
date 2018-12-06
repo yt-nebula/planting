@@ -36,6 +36,16 @@ class Shell(ModuleBase):
     def success_message(self):
         return self._planting.success_message(self._output)
 
+    def print_info(self):
+        res = self._planting.result()
+        if res is True:
+            self._planting.logger.info(
+                "host {}: ".format(self._env.ip) +
+                "execute \"{}\" success!".format(self._command))
+        else:
+            self._planting.logger.error("execute command failed!")
+
     def __call__(self, command):
         self.build_tasks(command)
+        self._command = command
         return self.play()
