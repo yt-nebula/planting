@@ -8,6 +8,19 @@ import json
 
 
 class Jsoninfile(ModuleBase):
+    """
+    modify json file
+
+    Args:
+        path(str): source file path
+
+        keys(list): key of which you want to modify in json file
+
+        val(str): value
+
+    Return:
+        result(bool): execution status
+    """
 
     def __init__(self):
         super(Jsoninfile, self).__init__()
