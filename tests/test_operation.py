@@ -68,7 +68,8 @@ def test_waitfor(machine: Machine):
     # FIXME: can't test close port due to missing nginx
     # machine.shell(command='nginx -c /usr/local/nginx/conf/nginx.conf')
     # assert True is machine.wait_for(port='80', state='started', timeout=10)
-    
+
+
 def test_unarchive(machine: Machine):
     f = tempfile.NamedTemporaryFile()
     f.write(b'Hello World!')
@@ -79,7 +80,7 @@ def test_unarchive(machine: Machine):
     assert True is machine.unarchive(src=tar.name, dest="/root/")
     f.close()
 
-# FIXME: can't test in docker due to missing systemctl or service
-# def test_process(machine: Machine):
-#     assert True is machine.process(process="rsync", state="started")
-#     assert True is machine.shell(command="service rsync status")
+    # FIXME: can't test in docker due to missing systemctl or service
+    # def test_process(machine: Machine):
+    # assert True is machine.process(process="rsync", state="started")
+    # assert True is machine.shell(command="service rsync status")

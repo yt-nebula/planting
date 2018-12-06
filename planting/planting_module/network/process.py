@@ -41,4 +41,3 @@ class Process(ModuleBase):
                 .format(self._state))
         else:
             self._planting.print_error()
-
