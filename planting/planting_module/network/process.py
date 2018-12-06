@@ -26,9 +26,6 @@ class Process(ModuleBase):
                 args=dict(name=process, state=state))
         )]
 
-    def output_field(self):
-        self._output = 'status'
-
     def register_machine(self, machine):
         self._env = machine._env
         self._planting = machine._planting
@@ -36,20 +33,20 @@ class Process(ModuleBase):
 
     def __call__(self, process, state):
         self.build_tasks(process, state)
-        self._planting.run_planting([self._env.ip], self._tasks)
-        self.print_info(self._planting)
-        return self._planting.result()
+        return self.play()
 
-    def print_info(self, planting):
+    def print_info(self):
+        res = self._planting.result()
+        state = self.active_state(self, self._planting)
+        if res is True:
+            self._planting.logger.info(
+                "host {}: ".format(self._env.ip) +
+                "handle service success, now active state is {0}"
+                .format(state))
+        else:
+            self._planting.print_error()
+
+    def active_state(self, planting):
         for host in planting.results_callback.host_ok:
             for task in planting.results_callback.host_ok[host]:
-                planting.logger.info(
-                    host + ": " + str(task['status']['ActiveState']))
-
-        for host in planting.results_callback.host_unreachable:
-            for task in planting.results_callback.host_unreachable[host]:
-                planting.logger.error(host + ": " + task['msg'])
-
-        for host in planting.results_callback.host_failed:
-            for task in planting.results_callback.host_failed[host]:
-                planting.logger.error(host + ": " + task['msg'])
+                return task['status']['ActiveState']

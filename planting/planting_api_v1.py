@@ -117,6 +117,7 @@ class PlantingApi(object):
             for task in self.results_callback.host_ok[host]:
                 self.logger.info(host + ": " + str(task[field]))
 
+    def print_error(self):
         for host in self.results_callback.host_unreachable:
             for task in self.results_callback.host_unreachable[host]:
                 self.logger.error(host + ": " + task['msg'])

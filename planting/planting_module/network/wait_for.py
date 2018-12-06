@@ -28,9 +28,6 @@ class WaitFor(ModuleBase):
                 args=dict(port=port, state=state, timeout=timeout))
         )]
 
-    def output_field(self):
-        self._output = 'msg'
-
     def get_output(self):
         self._planting.results_callback
 
@@ -39,7 +36,17 @@ class WaitFor(ModuleBase):
         self._planting = machine._planting
         machine.wait_for = self
 
+    def print_info(self):
+        res = self._planting.result()
+        if res is True:
+            self._planting.logger.info(
+                "host {}: ".format(self._env.ip) +
+                "wait for port {0} to {1} success"
+                .format(self._port, self._state))
+        else:
+            self._planting.print_error()
+
     def __call__(self, port, state, timeout):
         self.build_tasks(port, state, timeout)
-        self._planting.run_planting([self._env.ip], self._tasks)
-        return self._planting.result()
+        self._port, self._state = port, state
+        return self.play()

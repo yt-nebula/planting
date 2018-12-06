@@ -39,7 +39,6 @@ def test_fetch(machine: Machine):
         assert True is machine.fetch(src="/root/1.txt", dest=tmpDir)
         res = os.popen('cat ' + tmpDir + "/" +
                        machine.ip + "/root/1.txt").read()
-        print(res)
         assert res is not ""
 
 
