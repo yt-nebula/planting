@@ -29,20 +29,16 @@ class Process(ModuleBase):
 
     def __call__(self, process, state):
         self.build_tasks(process, state)
+        self._state = state
         return self.play()
 
     def print_info(self):
         res = self._planting.result()
-        state = self.active_state(self, self._planting)
         if res is True:
             self._planting.logger.info(
                 "host {}: ".format(self._env.ip) +
                 "handle service success, now active state is {0}"
-                .format(state))
+                .format(self._state))
         else:
             self._planting.print_error()
 
-    def active_state(self, planting):
-        for host in planting.results_callback.host_ok:
-            for task in planting.results_callback.host_ok[host]:
-                return task['status']['ActiveState']
