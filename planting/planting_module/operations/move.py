@@ -24,9 +24,6 @@ class Move(ModuleBase):
                 args='mv ' + src + ' ' + dest)
         )]
 
-    def output_field(self):
-        self._output = 'changed'
-
     def register_machine(self, machine):
         self._env = machine._env
         self._planting = machine._planting
@@ -39,7 +36,7 @@ class Move(ModuleBase):
                 "host {}: ".format(self._env.ip) +
                 "move {0} to {1} success".format(self._src, self._dest))
         else:
-            self._planting.logger.error("modify failed!")
+            self._planting.print_error()
 
     def __call__(self, src, dest):
         self.build_tasks(src, dest)

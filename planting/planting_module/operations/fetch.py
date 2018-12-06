@@ -20,9 +20,6 @@ class Fetch(ModuleBase):
             module='fetch',
             args=dict(src=src, dest=dest)))]
 
-    def output_field(self):
-        self._output = 'changed'
-
     def register_machine(self, machine):
         self._env = machine._env
         self._planting = machine._planting
@@ -36,7 +33,7 @@ class Fetch(ModuleBase):
                 "fetch from remote {0} to local {1} success"
                 .format(self._src, self._dest))
         else:
-            self._planting.logger.error("download failed!")
+            self._planting.print_error()
 
     def __call__(self, src, dest):
         self.build_tasks(src, dest)

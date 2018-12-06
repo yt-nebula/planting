@@ -26,9 +26,6 @@ class Create(ModuleBase):
                 args=command + ' ' + path)
         )]
 
-    def output_field(self):
-        self._output = 'changed'
-
     def register_machine(self, machine):
         self._env = machine._env
         self._planting = machine._planting
@@ -41,7 +38,7 @@ class Create(ModuleBase):
                 "host {}: ".format(self._env.ip) +
                 "create {0} {1} success".format(self._state, self._path))
         else:
-            self._planting.logger.error("create failed!")
+            self._planting.print_error()
 
     def __call__(self, path, state):
         self.build_tasks(path, state)

@@ -23,9 +23,6 @@ class WaitFor(ModuleBase):
                 args=dict(port=port, state=state, timeout=timeout))
         )]
 
-    def output_field(self):
-        self._output = 'msg'
-
     def get_output(self):
         self._planting.results_callback
 
@@ -42,7 +39,7 @@ class WaitFor(ModuleBase):
                 "wait for port {0} to {1} success"
                 .format(self._port, self._state))
         else:
-            self._planting.logger.error("wait for timeout!")
+            self._planting.print_error()
 
     def __call__(self, port, state, timeout):
         self.build_tasks(port, state, timeout)

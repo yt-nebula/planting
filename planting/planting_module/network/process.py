@@ -22,9 +22,6 @@ class Process(ModuleBase):
                 args=dict(name=process, state=state))
         )]
 
-    def output_field(self):
-        self._output = 'status'
-
     def register_machine(self, machine):
         self._env = machine._env
         self._planting = machine._planting
@@ -43,7 +40,7 @@ class Process(ModuleBase):
                 "handle service success, now active state is {0}"
                 .format(state))
         else:
-            self._planting.logger.error("unarchive failed!")
+            self._planting.print_error()
 
     def active_state(self, planting):
         for host in planting.results_callback.host_ok:

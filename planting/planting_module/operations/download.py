@@ -22,9 +22,6 @@ class Download(ModuleBase):
             module='get_url',
             args=dict(url=url, dest=dest)))]
 
-    def output_field(self):
-        self._output = 'msg'
-
     def register_machine(self, machine):
         self._env = machine._env
         self._planting = machine._planting
@@ -38,7 +35,7 @@ class Download(ModuleBase):
                 "download from url: {0} to {1} success"
                 .format(self._url, self._dest))
         else:
-            self._planting.logger.error("download failed!")
+            self._planting.print_error()
 
     def __call__(self, url, dest):
         self.build_tasks(url, dest)
