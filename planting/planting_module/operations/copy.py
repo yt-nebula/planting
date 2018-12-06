@@ -11,9 +11,12 @@ class Copy(ModuleBase):
 
     Args:
         src(str): source file path
-        dest(str): destination path
-    """
 
+        dest(str): destination path
+
+    Return:
+        result(bool): execution status
+    """
     def __init__(self):
         super(Copy, self).__init__()
 

@@ -2,5 +2,5 @@ language: python
 python:
   - "3.6"
 script:
-  - pycodestyle --exclude=migrations .
+  - pycodestyle --exclude=migrations --max-line-length=120 .
   - pytest -s tests/

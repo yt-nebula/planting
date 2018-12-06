@@ -10,7 +10,11 @@ class Fetch(ModuleBase):
 
     Args:
         src(str): remote path
+
         dest(str): local path
+
+    Return:
+        result(bool): execution status
     """
     def __init__(self):
         super(Fetch, self).__init__()
