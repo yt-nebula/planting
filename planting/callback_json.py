@@ -38,7 +38,7 @@ class ResultCallback(CallbackBase):
                 '%Y_%m_%d', time.localtime(
                     time.time())))
 
-        f = open(self.output_path, 'w')
+        f = open(self.output_path, 'a+')
         self._playbook_name = None
         self._logger.add_consumers(
             (self._logger.VERBOSE_DEBUG, f), (level, complete_log.append))

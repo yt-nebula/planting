@@ -6,7 +6,6 @@ import docker
 
 class Container(object):
     def __init__(self, **kwargs):
-        print(kwargs)
         self.ip = kwargs['ip']
         self.username = kwargs['username']
         self.password = kwargs['password']

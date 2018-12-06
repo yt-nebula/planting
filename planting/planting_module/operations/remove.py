@@ -22,14 +22,21 @@ class Remove(ModuleBase):
                 args='rm -rf ' + src)
         )]
 
-    def output_field(self):
-        self._output = 'changed'
-
     def register_machine(self, machine):
         self._env = machine._env
         self._planting = machine._planting
         machine.remove = self
 
+    def print_info(self):
+        res = self._planting.result()
+        if res is True:
+            self._planting.logger.info(
+                "host {}: ".format(self._env.ip) +
+                "remove {0} success".format(self._src))
+        else:
+            self._planting.print_error()
+
     def __call__(self, src):
         self.build_tasks(src)
+        self._src = src
         return self.play()

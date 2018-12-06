@@ -13,6 +13,7 @@ class Download(ModuleBase):
         url(str): source file
         dest(str): destination path
     """
+
     def __init__(self):
         super(Download, self).__init__()
 
@@ -21,14 +22,22 @@ class Download(ModuleBase):
             module='get_url',
             args=dict(url=url, dest=dest)))]
 
-    def output_field(self):
-        self._output = 'msg'
-
     def register_machine(self, machine):
         self._env = machine._env
         self._planting = machine._planting
         machine.download = self
 
+    def print_info(self):
+        res = self._planting.result()
+        if res is True:
+            self._planting.logger.info(
+                "host {}: ".format(self._env.ip) +
+                "download from url: {0} to {1} success"
+                .format(self._url, self._dest))
+        else:
+            self._planting.print_error()
+
     def __call__(self, url, dest):
         self.build_tasks(url, dest)
+        self._url, self._dest = url, dest
         return self.play()
