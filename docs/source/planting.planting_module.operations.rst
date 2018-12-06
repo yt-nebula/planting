@@ -46,6 +46,7 @@ Machine.fetch
     :show-inheritance:
 
 example.::
+
     node = Machine(ip='XXX', remote_user='XXX', password='XXX')
     node.fetch(src='~/test.py', dest='~/test/)
 
@@ -56,10 +57,17 @@ Machine.jsoninfile
     :members:
     :show-inheritance:
 
-example.::
+example-1.::
 
     node = Machine(ip='XXX', remote_user='XXX', password='XXX')
-    node.jsoninfile()
+    # infile.conf: {"a": {"b": 1}}
+    node.jsoninfile(path='/root/infile.conf', keys=["a","b"], val=1)
+
+example-2.::
+
+    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    # infile.conf: {"a": [{"b": 1}]}
+    node.jsoninfile(path='/root/infile.conf', keys=["a",0,"b"], val=1)
 
 Machine.move
 ------------------------------------------------
