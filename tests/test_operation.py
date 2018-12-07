@@ -71,7 +71,7 @@ def test_waitfor(machine: Machine):
 
 
 def test_unarchive(machine: Machine):
-    f = tempfile.NamedTemporaryFile()
+    f = tempfile.NamedTemporaryFile(prefix='test', suffix='tar', delete=True)
     f.write(b'Hello World!')
     f.seek(0)
     # compress file
@@ -79,7 +79,7 @@ def test_unarchive(machine: Machine):
         tar.add(f.name)
     assert True is machine.unarchive(src=tar.name, dest="/root/")
     f.close()
-
+    assert True is machine.shell(command="cat /root/tmp/test*tar")
     # FIXME: can't test in docker due to missing systemctl or service
     # def test_process(machine: Machine):
     # assert True is machine.process(process="rsync", state="started")
