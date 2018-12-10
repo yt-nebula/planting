@@ -5,14 +5,12 @@ import copy
 import os
 import json
 import datetime
-import time
 from collections import defaultdict
 
+import logging
 from ansible.plugins.callback import CallbackBase
 from ansible.playbook.play import Play
 from ansible.vars.clean import strip_internal_keys
-
-from planting.logger import Logger
 
 
 def current_time():
@@ -25,23 +23,12 @@ class ResultCallback(CallbackBase):
         self.results = []
         self.output = []
         self.playbook = {}
-        self._logger = Logger()
+        self._logger = logging.getLogger('ansible')
         self.host_ok = defaultdict(list)
         self.host_unreachable = defaultdict(list)
         self.host_failed = defaultdict(list)
         self.success = True
-        level = self._logger.DEBUG
-        complete_log = []
-        # from log config
-        self.output_path = 'ansible_debug_{time}.log'.format(
-            time=time.strftime(
-                '%Y_%m_%d', time.localtime(
-                    time.time())))
-
-        f = open(self.output_path, 'a+')
         self._playbook_name = None
-        self._logger.add_consumers(
-            (self._logger.VERBOSE_DEBUG, f), (level, complete_log.append))
 
     def play_info(self):
         return self.results[-1]["play"]

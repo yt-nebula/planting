@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf -*-
 
-import sys
 from collections import namedtuple
 from collections import defaultdict
 
+from logging import getLogger
 from ansible.parsing.dataloader import DataLoader
 from ansible.vars.manager import VariableManager
 from ansible.inventory.manager import InventoryManager
@@ -13,7 +13,6 @@ from ansible.inventory.host import Host
 from ansible.executor.task_queue_manager import TaskQueueManager
 
 from planting.callback_json import ResultCallback
-from planting.logger import Logger
 from planting.environment import Environment
 
 Options = namedtuple('Options',
@@ -61,13 +60,7 @@ class PlantingApi(object):
         self.variable_manager = VariableManager()
         self.passwords = {"conn_pass": env.password}
         self.results_callback = ResultCallback()
-        self.logger = Logger()
-        level = Logger.DEBUG
-        complete_log = []
-        self.logger.add_consumers(
-            (Logger.VERBOSE_DEBUG, sys.stdout),
-            (level, complete_log.append)
-        )
+        self.logger = getLogger('planting')
         # after ansible 2.3 need parameter 'sources'
         # create inventory, use path to host config file
         # as source or hosts in a comma separated string
