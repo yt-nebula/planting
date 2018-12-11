@@ -2,6 +2,8 @@
 # -*- coding: utf8 -*-
 from abc import ABCMeta, abstractmethod
 
+from planting.exception import AnsibleFailException, AnsibleUnreachableException
+
 
 class ModuleBase(metaclass=ABCMeta):
     def __init__(self):
@@ -23,7 +25,16 @@ class ModuleBase(metaclass=ABCMeta):
     def print_info(self):
         pass
 
+    def handle_exception(self):
+        failed = self._planting.failed_message()
+        unreachable = self._planting.unreachable_message()
+        if failed is not "":
+            raise AnsibleFailException(failed)
+        if unreachable is not "":
+            raise AnsibleUnreachableException(unreachable)
+
     def play(self):
         self._planting.run_planting([self._env.ip], self._tasks)
+        self.handle_exception()
         self.print_info()
         return self._planting.result()
