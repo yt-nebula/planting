@@ -32,8 +32,7 @@ def machine(image_initialization):
     machine = Machine(
         ip=container.ip,
         remote_user=container.username,
-        password=container.password,
-        python='/root/venv/bin/python')
+        password=container.password)
     machine.register_all()
     yield machine
     kill_container(container.container_id)

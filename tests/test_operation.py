@@ -4,6 +4,7 @@
 import os
 import re
 import tempfile
+import tarfile
 
 from planting.machine import Machine
 
@@ -55,8 +56,8 @@ def test_remove(machine: Machine):
 
 
 def test_pip(machine: Machine):
-    assert True is machine.pip(package="six", executable="/root/venv/bin/pip")
-    assert True is machine.shell(command="/root/venv/bin/pip show six")
+    assert True is machine.pip(package="six")
+    assert True is machine.shell(command="pip show six")
     msg = machine.shell.success_message()
     pattern = re.compile(r"Name: six")
     assert pattern.findall(msg) is not 0
@@ -68,21 +69,18 @@ def test_waitfor(machine: Machine):
     # machine.shell(command='nginx -c /usr/local/nginx/conf/nginx.conf')
     # assert True is machine.wait_for(port='80', state='started', timeout=10)
 
-# FIXME: can't test in docker due to missing GNU tar
-# def test_unarchive(machine: Machine):
-#     f = tempfile.NamedTemporaryFile()
-#     f.write(b'Hello World!')
-#     f.seek(0)
-#     # compress file
-#     with tarfile.open("test.tar.gz", "w:gz") as tar:
-#         tar.add(f.name)
-#     assert True is machine.unarchive(src=tar.name, dest="/root/")
-#     f.close()
 
-# FIXME: can't test in docker due to missing systemctl or service
-# def test_process(machine: Machine):
-#     assert True is machine.process(process="zabbix-agent", state="started")
-#     assert True is machine.shell(command="service zabbix-agent status")
-#     msg = machine.shell.success_message()
-#     pattern = re.compile(r"Active: active")
-#     assert pattern.findall(msg) is not 0
+def test_unarchive(machine: Machine):
+    f = tempfile.NamedTemporaryFile(prefix='test', suffix='tar', delete=True)
+    f.write(b'Hello World!')
+    f.seek(0)
+    # compress file
+    with tarfile.open("test.tar.gz", "w:gz") as tar:
+        tar.add(f.name)
+    assert True is machine.unarchive(src=tar.name, dest="/root/")
+    f.close()
+    assert True is machine.shell(command="cat /root/tmp/test*tar")
+    # FIXME: can't test in docker due to missing systemctl or service
+    # def test_process(machine: Machine):
+    # assert True is machine.process(process="rsync", state="started")
+    # assert True is machine.shell(command="service rsync status")

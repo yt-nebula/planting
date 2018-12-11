@@ -20,11 +20,11 @@ class Pip(ModuleBase):
     def __init__(self):
         super(Pip, self).__init__()
 
-    def build_tasks(self, package, executable):
+    def build_tasks(self, package):
         self._tasks = [dict(
             action=dict(
                 module='pip',
-                args=dict(name=package, executable=executable))
+                args=dict(name=package))
         )]
 
     def register_machine(self, machine):
@@ -41,7 +41,7 @@ class Pip(ModuleBase):
         else:
             self._planting.print_error()
 
-    def __call__(self, package, executable):
-        self.build_tasks(package, executable)
+    def __call__(self, package):
+        self.build_tasks(package)
         self._package = package
         return self.play()
