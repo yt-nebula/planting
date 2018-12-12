@@ -81,6 +81,8 @@ class PlantingApi(object):
         self.variable_manager.set_host_variable(
             host_info, 'ansible_pass', env.password)
         self.variable_manager.set_host_variable(
+            host_info, 'ansible_sudo_pass', env.password)
+        self.variable_manager.set_host_variable(
             host_info, 'ansible_python_interpreter', env.python)
 
     def run_planting(self, host_list, task_list):
@@ -115,6 +117,7 @@ class PlantingApi(object):
             for task in self.results_callback.host_ok[host]:
                 self.logger.info(host + ": " + str(task[field]))
 
+    def print_error(self):
         for host in self.results_callback.host_unreachable:
             for task in self.results_callback.host_unreachable[host]:
                 self.logger.error(host + ": " + task['msg'])

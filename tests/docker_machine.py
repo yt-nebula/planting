@@ -6,7 +6,6 @@ import docker
 
 class Container(object):
     def __init__(self, **kwargs):
-        print(kwargs)
         self.ip = kwargs['ip']
         self.username = kwargs['username']
         self.password = kwargs['password']
@@ -15,13 +14,13 @@ class Container(object):
 
 def start_image():
     client = docker.from_env()
-    if client.images.list(name="eugenes1/python-sshd") is []:
-        client.images.pull("eugenes1/python-sshd")
+    if client.images.list(name="blueduc/planting-test") is []:
+        client.images.pull("blueduc/planting-test")
 
 
 def start_container():
     client = docker.from_env()
-    container = client.containers.run("eugenes1/python-sshd:3.6", detach=True)
+    container = client.containers.run("blueduc/planting-test", detach=True)
     status = client.containers.get(container.short_id)
     docker_machine = Container(
         ip=status.attrs['NetworkSettings']['IPAddress'],

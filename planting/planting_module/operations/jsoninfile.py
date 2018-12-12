@@ -8,6 +8,19 @@ import json
 
 
 class Jsoninfile(ModuleBase):
+    """
+    modify json file
+
+    Args:
+        path(str): source file path
+
+        keys(list): key of which you want to modify in json file
+
+        val(str): value
+
+    Return:
+        result(bool): execution status
+    """
 
     def __init__(self):
         super(Jsoninfile, self).__init__()
@@ -43,14 +56,21 @@ class Jsoninfile(ModuleBase):
             args=shell_jq)
             )]
 
-    def output_field(self):
-        self._output = 'changed'
-
     def register_machine(self, machine):
         self._env = machine._env
         self._planting = machine._planting
         machine.jsoninfile = self
 
+    def print_info(self):
+        res = self._planting.result()
+        if res is True:
+            self._planting.logger.info(
+                "host {}: ".format(self._env.ip) +
+                "modify {0} json file success".format(self._path))
+        else:
+            self._planting.print_error()
+
     def __call__(self, path: str, keys: list, val):
         self.build_tasks(path, keys, val)
+        self._path = path
         return self.play()

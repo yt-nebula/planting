@@ -5,6 +5,18 @@ from planting.planting_module import ModuleBase
 
 
 class Create(ModuleBase):
+    """
+
+    create the file or directory
+
+    Args:
+        path(str): path of created file or directory
+
+        state(str): create file when state = ‘file’，create directory when state = ‘dir’
+
+    Return:
+        result(bool): execution status
+    """
     def __init__(self):
         super(Create, self).__init__()
 
@@ -16,14 +28,21 @@ class Create(ModuleBase):
                 args=command + ' ' + path)
         )]
 
-    def output_field(self):
-        self._output = 'changed'
-
     def register_machine(self, machine):
         self._env = machine._env
         self._planting = machine._planting
         machine.create = self
 
+    def print_info(self):
+        res = self._planting.result()
+        if res is True:
+            self._planting.logger.info(
+                "host {}: ".format(self._env.ip) +
+                "create {0} {1} success".format(self._state, self._path))
+        else:
+            self._planting.print_error()
+
     def __call__(self, path, state):
         self.build_tasks(path, state)
+        self._path, self._state = path, state
         return self.play()
