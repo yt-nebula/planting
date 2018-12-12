@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf -*-
 
-import sys
+
+import time
+import datetime
 from collections import namedtuple
 from collections import defaultdict
 
+from logging import getLogger
 from ansible.parsing.dataloader import DataLoader
 from ansible.vars.manager import VariableManager
 from ansible.inventory.manager import InventoryManager
@@ -13,7 +16,6 @@ from ansible.inventory.host import Host
 from ansible.executor.task_queue_manager import TaskQueueManager
 
 from planting.callback_json import ResultCallback
-from planting.logger import Logger
 from planting.environment import Environment
 
 Options = namedtuple('Options',
@@ -61,13 +63,7 @@ class PlantingApi(object):
         self.variable_manager = VariableManager()
         self.passwords = {"conn_pass": env.password}
         self.results_callback = ResultCallback()
-        self.logger = Logger()
-        level = Logger.DEBUG
-        complete_log = []
-        self.logger.add_consumers(
-            (Logger.VERBOSE_DEBUG, sys.stdout),
-            (level, complete_log.append)
-        )
+        self.logger = getLogger('planting')
         # after ansible 2.3 need parameter 'sources'
         # create inventory, use path to host config file
         # as source or hosts in a comma separated string
@@ -108,6 +104,11 @@ class PlantingApi(object):
             self.clear_callback()
             tqm._stdout_callback = self.results_callback
             tqm.run(play)
+            finished = self.results_callback.play_status()
+            # async to sync
+            while finished is False:
+                finished = self.results_callback.play_status()
+                time.sleep(0.2)
         finally:
             if tqm is not None:
                 tqm.cleanup()
@@ -117,16 +118,21 @@ class PlantingApi(object):
             for task in self.results_callback.host_ok[host]:
                 self.logger.info(host + ": " + str(task[field]))
 
-    def print_error(self):
+    # TODO: only first unreachable message will return
+    def unreachable_message(self):
         for host in self.results_callback.host_unreachable:
             for task in self.results_callback.host_unreachable[host]:
-                self.logger.error(host + ": " + task['msg'])
+                return host + ": " + task['msg']
+        return ""
 
+    # TODO: only first fail message will return
+    def failed_message(self):
         for host in self.results_callback.host_failed:
             for task in self.results_callback.host_failed[host]:
-                self.logger.error(host + ": " + task['msg'])
+                return host + ": " + task['msg']
+        return ""
 
-    # TODO: only first message will return
+    # TODO: only first success message will return
     def success_message(self, field):
         for host in self.results_callback.host_ok:
             for task in self.results_callback.host_ok[host]:
@@ -137,7 +143,9 @@ class PlantingApi(object):
         self.results_callback.host_unreachable = defaultdict(list)
         self.results_callback.host_failed = defaultdict(list)
         self.results_callback.host_ok = defaultdict(list)
+        self.start_time = datetime.datetime.utcnow()
         self.results_callback.success = True
+        self.results_callback.finished = False
 
     def result(self):
         return self.results_callback.success

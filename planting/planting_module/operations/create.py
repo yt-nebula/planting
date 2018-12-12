@@ -20,7 +20,7 @@ class Create(ModuleBase):
     def __init__(self):
         super(Create, self).__init__()
 
-    def build_tasks(self, path: str, state: str):
+    def build_tasks(self, path: str, state: str):  # type: ignore
         command = state is "dir" and "mkdir" or "touch"
         self._tasks = [dict(
             action=dict(
@@ -42,7 +42,7 @@ class Create(ModuleBase):
         else:
             self._planting.print_error()
 
-    def __call__(self, path, state):
+    def __call__(self, path, state) -> bool:  # type: ignore
         self.build_tasks(path, state)
         self._path, self._state = path, state
         return self.play()

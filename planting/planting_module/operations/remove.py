@@ -39,7 +39,7 @@ class Remove(ModuleBase):
         else:
             self._planting.print_error()
 
-    def __call__(self, src):
+    def __call__(self, src) -> bool:  # type: ignore
         self.build_tasks(src)
         self._src = src
         return self.play()
