@@ -64,9 +64,12 @@ def test_move(machine: Machine):
 
 
 def test_remove(machine: Machine):
+    logger = logging.getLogger('console')
     assert True is machine.create(path="~/test", state="file")
     assert True is machine.remove(src="~/test")
-    assert False is machine.shell(command="mv ~/test ~/test.txt")
+    with pytest.raises(AnsibleFailException) as ex:
+        assert False is machine.shell(command="mv ~/test ~/test.txt")
+    logger.error(ex)
 
 
 def test_pip(machine: Machine):
