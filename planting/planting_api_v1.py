@@ -3,6 +3,7 @@
 
 
 import time
+import datetime
 from collections import namedtuple
 from collections import defaultdict
 
@@ -103,13 +104,11 @@ class PlantingApi(object):
             self.clear_callback()
             tqm._stdout_callback = self.results_callback
             tqm.run(play)
-            host_count = len(host_list)
-            task_count = len(task_list)
-            finished_count = self.results_callback.play_status()
+            finished = self.results_callback.play_status()
             # async to sync
-            while finished_count < host_count * task_count:
-                finished_count = self.results_callback.play_status()
-                time.sleep(0.1)
+            while finished is False:
+                finished = self.results_callback.play_status()
+                time.sleep(0.2)
         finally:
             if tqm is not None:
                 tqm.cleanup()
@@ -144,8 +143,9 @@ class PlantingApi(object):
         self.results_callback.host_unreachable = defaultdict(list)
         self.results_callback.host_failed = defaultdict(list)
         self.results_callback.host_ok = defaultdict(list)
+        self.start_time = datetime.datetime.utcnow()
         self.results_callback.success = True
-        self.results_callback.finished = 0
+        self.results_callback.finished = False
 
     def result(self):
         return self.results_callback.success

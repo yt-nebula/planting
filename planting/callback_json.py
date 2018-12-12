@@ -2,14 +2,15 @@
 # -*- coding: utf8 -*-
 
 import copy
-import os
-import json
 import datetime
+import json
+import logging
+import os
+import socket
 from collections import defaultdict
 
-import logging
-from ansible.plugins.callback import CallbackBase
 from ansible.playbook.play import Play
+from ansible.plugins.callback import CallbackBase
 from ansible.vars.clean import strip_internal_keys
 
 
@@ -23,13 +24,16 @@ class ResultCallback(CallbackBase):
         self.results = []
         self.output = []
         self.playbook = {}
-        self._logger = logging.getLogger('ansible')
+        self.logger = logging.getLogger('ansible')
         self.host_ok = defaultdict(list)
         self.host_unreachable = defaultdict(list)
         self.host_failed = defaultdict(list)
         self.success = True
-        self.finished = 0
+        self.finished = False
+        self.errors = 0
         self._playbook_name = None
+        self.hostname = socket.gethostname()
+        self.start_time = None
 
     def play_info(self):
         return self.results[-1]["play"]
@@ -76,7 +80,15 @@ class ResultCallback(CallbackBase):
         return data
 
     def v2_playbook_on_start(self, playbook):
+        self.finished = False
         self._playbook_name = os.path.splitext(playbook._file_name)[0]
+        data = {
+            'status': "OK",
+            'host': self.hostname,
+            'ansible_type': "start",
+            'ansible_playbook': self.playbook,
+        }
+        self.logger.info("ansible start", extra=data)
 
     def v2_playbook_on_play_start(self, play):
         if self._playbook_name:
@@ -95,28 +107,46 @@ class ResultCallback(CallbackBase):
         end_time = current_time()
         self.results[-1]['tasks'][-1]['task']['duration']['end'] = end_time
         self.results[-1]['play']['duration']['end'] = end_time
-        self._logger.debug(json.dumps({host.name: self.results[-1]}, indent=4))
         self.host_ok[result._host.get_name()].append(clean_result)
-        self.finished += 1
+        self.logger.debug(json.dumps({host.name: self.results[-1]}, indent=4))
+        data = {
+            'status': "OK",
+            'host': self.hostname,
+            'ansible_type': "task",
+            'ansible_playbook': self.playbook,
+            'ansible_host': result._host.name,
+            'ansible_task': result._task,
+            'ansible_result': self._dump_results(result._result)
+        }
+        self.success = True
+        self.finished = True
+        self.logger.info("ansible ok", extra=data)
 
     def play_status(self):
         return self.finished
 
     def v2_playbook_on_stats(self, stats):
-        """Display info about playbook statistics"""
-        hosts = sorted(stats.processed.keys())
-
-        summary = {}
-        for h in hosts:
-            s = stats.summarize(h)
-            summary[h] = s
-
-        self.playbook['plays'] = self.results
-        self.playbook['stats'] = summary
-        self.output.append(self.playbook)
-
-        json.dump(self.output, open(self.output_path, 'w'),
-                  indent=4, sort_keys=True, separators=(',', ': '))
+        end_time = datetime.utcnow()
+        runtime = end_time - self.start_time
+        summarize_stat = {}
+        for host in stats.processed.keys():
+            summarize_stat[host] = stats.summarize(host)
+        if self.errors == 0:
+            status = "OK"
+            self.success = True
+        else:
+            status = "FAILED"
+            self.success = False
+        self.finished = True
+        data = {
+            'status': status,
+            'host': self.hostname,
+            'ansible_type': "finish",
+            'ansible_playbook': self.playbook,
+            'ansible_playbook_duration': runtime.total_seconds(),
+            'ansible_result': json.dumps(summarize_stat),
+        }
+        self.logger.info("ansible stats", extra=data)
 
     def v2_runner_on_failed(self, result, **kwargs):
         host = result._host
@@ -126,10 +156,21 @@ class ResultCallback(CallbackBase):
         end_time = current_time()
         self.results[-1]['tasks'][-1]['task']['duration']['end'] = end_time
         self.results[-1]['play']['duration']['end'] = end_time
-        self._logger.error(json.dumps({host.name: self.results[-1]}, indent=4))
+        self.logger.error(json.dumps({host.name: self.results[-1]}, indent=4))
         self.host_failed[result._host.get_name()].append(clean_result)
+        data = {
+            'status': "FAILED",
+            'host': self.hostname,
+            'ansible_type': "task",
+            'ansible_playbook': self.playbook,
+            'ansible_host': result._host.name,
+            'ansible_task': result._task,
+            'ansible_result': self._dump_results(result._result)
+        }
+        self.errors += 1
         self.success = False
-        self.finished += 1
+        self.finished = True
+        self.logger.error("ansible failed", extra=data)
 
     def v2_runner_on_unreachable(self, result, **kwargs):
         host = result._host
@@ -139,9 +180,20 @@ class ResultCallback(CallbackBase):
         end_time = current_time()
         self.results[-1]['tasks'][-1]['task']['duration']['end'] = end_time
         self.results[-1]['play']['duration']['end'] = end_time
-        self._logger.error(json.dumps({host.name: self.results[-1]}, indent=4))
+        self.logger.error(json.dumps({host.name: self.results[-1]}, indent=4))
         self.host_unreachable[result._host.get_name()].append(clean_result)
+        data = {
+            'status': "UNREACHABLE",
+            'host': self.hostname,
+            'ansible_type': "task",
+            'ansible_playbook': self.playbook,
+            'ansible_host': result._host.name,
+            'ansible_task': result._task,
+            'ansible_result': self._dump_results(result._result)
+        }
+        self.errors += 1
         self.success = False
-        self.finished += 1
+        self.finished = True
+        self.logger.error("ansible unreachable", extra=data)      
 
     v2_runner_on_skipped = v2_runner_on_ok
