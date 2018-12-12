@@ -40,7 +40,7 @@ class Download(ModuleBase):
         else:
             self._planting.print_error()
 
-    def __call__(self, url, dest):
+    def __call__(self, url, dest) -> bool:  # type: ignore
         self.build_tasks(url, dest)
         self._url, self._dest = url, dest
         return self.play()

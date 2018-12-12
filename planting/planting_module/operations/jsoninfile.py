@@ -70,7 +70,7 @@ class Jsoninfile(ModuleBase):
         else:
             self._planting.print_error()
 
-    def __call__(self, path: str, keys: list, val):
+    def __call__(self, path: str, keys: list, val) -> bool:  # type: ignore
         self.build_tasks(path, keys, val)
         self._path = path
         return self.play()

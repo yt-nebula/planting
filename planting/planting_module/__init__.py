@@ -8,6 +8,8 @@ from planting.exception import AnsibleFailException, AnsibleUnreachableException
 class ModuleBase(metaclass=ABCMeta):
     def __init__(self):
         self._tasks = None
+        self._env = None
+        self._planting = None
 
     @abstractmethod
     def register_machine(self, machine):
@@ -33,7 +35,7 @@ class ModuleBase(metaclass=ABCMeta):
         if unreachable is not "":
             raise AnsibleUnreachableException(unreachable)
 
-    def play(self):
+    def play(self) -> bool:
         self._planting.run_planting([self._env.ip], self._tasks)
         self.handle_exception()
         self.print_info()

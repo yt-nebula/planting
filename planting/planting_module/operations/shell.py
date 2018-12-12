@@ -45,7 +45,7 @@ class Shell(ModuleBase):
         else:
             self._planting.print_error()
 
-    def __call__(self, command):
+    def __call__(self, command) -> bool:  # type: ignore
         self.build_tasks(command)
         self._command = command
         return self.play()
