@@ -1,62 +1,73 @@
-# #!/usr/bin/env python
-# # -*- coding: utf8 -*-
+#!/usr/bin/env python
+# -*- coding: utf8 -*-
 
-# import os
-# from functools import reduce
-# import json
-# from collections import OrderedDict
-# import os
-# # print(os.sys.path)
-# import paramiko
+import os
+from functools import reduce
+import json
+from collections import OrderedDict
+import os
+# print(os.sys.path)
+import paramiko
 
-# class FileConfig(object):
+EXAMPLES = r"""
 
-#     def __init__(self, machine, config_path):
-#         pass
+    with FileConfig(node, 'root/foo.conf') as src:
 
-#     def __enter__(self):
-#         ssh = paramiko.SSHClient()
-#         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-#         ssh.connect('10.40.50.132', username='linuxadmin', password='Hello=111!')
+        src['ip'] = '196.168.0.1'
+"""
 
-#         sftp = ssh.open_sftp()
-#         remote_file = sftp.file('/home/linuxadmin/variables.conf', mode='r+')
-#         content = remote_file.read()
-#         remote_file.close()
+class FileConfig(object):
+    """Change a josn file on the remote machie
 
-#         return content
+    Args:
+        path(str): path of a file
+        machine(str): an object of planting.machine.Machine
 
-#     def __exit__(self):
-#         remote_temp_file = sftp.file('/home/linuxadmin/variables_1.conf', mode='w+')
-#         remote_temp_file.write(json.dumps(json_content, indent=4, sort_keys=False))
-#         remote_temp_file.close()
+    """
+    def __init__(self, machine, path):
+        self._tasks = None
+        self._env = machine._env
+        self._path = path      
 
-# class FileConfigClient(object):
+    def get_content(self):
+        self.ssh_client = FileConfigClient(self._env).ssh_client()
+        self.remote_file = self.ssh_client.file(self._path, mode='r+')
+        self.content = self.remote_file.read().decode('utf8')
+        self.remote_file.close()
+        return self.content
 
-#     def __init__(self, machine):
-#         pass
+    def __enter__(self):
+        self.src = self.get_content()
+        self.src = json.loads(self.src)
+        return self.src
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.remote_temp_file = self.ssh_client.file(self._path, mode='w+')
+        self.remote_temp_file.write(json.dumps(self.src, indent=4, sort_keys=False))
+        self.remote_temp_file.close()
+
+    def __setitem__(self, key, val):
+        self.src[key] = val
+    
+    def __getitem__(self, item):
+        self.src[item]
+
+
+class Cont(str):
+    def __init__(self, cont):
+        self.str = cont
+
+
+class FileConfigClient(object):
+
+    def __init__(self, env):
+        self._ip = env.ip
+        self._user = env.remote_user
+        self._pass = env.password
         
-#     def ssh_client(self):
-#         pass
+    def ssh_client(self):
+        self.ssh = paramiko.SSHClient()
+        self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        self.ssh.connect(hostname='10.40.50.132', username='linuxadmin', password='Hello=111!')
 
-# content = content.replace('platform', 'aaa')
-# print content
-# print '\n',type(content),'\n'
-
-# content = content.replace('platform', 'aaa')
-
-# json_content = json.loads(content, object_pairs_hook=OrderedDict)
-# print json_content
-# print '\n',type(json_content),'\n'
-
-
-# json_content['_face_aaa_ip'] = '127.0.0.5'
-# print json_content
-# print '\n',type(json_content),'\n'
-
-
-
-# # stdin, stdout, stderr = ssh.exec_command('ll')
-# # output = stdout.readlines()
-# # print '\n'.join(output)
-# # print output
+        return self.ssh.open_sftp()
