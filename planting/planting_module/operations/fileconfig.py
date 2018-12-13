@@ -6,7 +6,7 @@ from functools import reduce
 import json
 from collections import OrderedDict
 import os
-# print(os.sys.path)
+from planting.machine import Machine
 import paramiko
 
 EXAMPLES = r"""
@@ -72,3 +72,10 @@ class FileConfigClient(object):
         self.ssh.connect(hostname='10.40.50.132', username='linuxadmin', password='Hello=111!')
 
         return self.ssh.open_sftp()
+
+if __name__ == '__main__':
+
+    node = Machine('xxx', 'xxx', 'xxx', python='/usr/bin/python')
+    with FileConfig(node, '/root/foo.conf') as src:
+
+        src['ip'] = '196.168.0.1'
