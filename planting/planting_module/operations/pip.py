@@ -41,7 +41,7 @@ class Pip(ModuleBase):
         else:
             self._planting.print_error()
 
-    def __call__(self, package):
+    def __call__(self, package) -> bool:  # type: ignore
         self.build_tasks(package)
         self._package = package
         return self.play()

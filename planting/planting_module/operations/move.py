@@ -41,7 +41,7 @@ class Move(ModuleBase):
         else:
             self._planting.print_error()
 
-    def __call__(self, src, dest):
+    def __call__(self, src, dest) -> bool:  # type: ignore
         self.build_tasks(src, dest)
         self._src, self._dest = src, dest
         return self.play()

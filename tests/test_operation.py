@@ -3,9 +3,13 @@
 
 import os
 import re
-import tempfile
 import tarfile
+import logging
+import tempfile
 
+import pytest
+
+from planting.exception import AnsibleFailException
 from planting.machine import Machine
 
 
@@ -16,6 +20,16 @@ def test_copy(machine: Machine):
         assert True is machine.copy(src=f.name, dest="/root/test.txt")
     assert True is machine.shell(command="cat /root/test.txt")
     assert True is machine.shell(command="mv /root/test.txt /root/temp")
+
+
+def test_copy_file_not_found(machine: Machine):
+    logger = logging.getLogger('console')
+    with tempfile.NamedTemporaryFile() as f:
+        f.write(b'Hello World!')
+        f.seek(0)
+        with pytest.raises(AnsibleFailException) as ex:
+            machine.copy(src="xxxx.txt", dest="/root/test.txt")
+        logger.error(ex)
 
 
 def test_create(machine: Machine):
@@ -50,9 +64,12 @@ def test_move(machine: Machine):
 
 
 def test_remove(machine: Machine):
+    logger = logging.getLogger('console')
     assert True is machine.create(path="~/test", state="file")
     assert True is machine.remove(src="~/test")
-    assert False is machine.shell(command="mv ~/test ~/test.txt")
+    with pytest.raises(AnsibleFailException) as ex:
+        assert False is machine.shell(command="mv ~/test ~/test.txt")
+    logger.error(ex)
 
 
 def test_pip(machine: Machine):
