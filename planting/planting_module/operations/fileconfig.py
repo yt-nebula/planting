@@ -16,6 +16,7 @@ EXAMPLES = r"""
         src['ip'] = '196.168.0.1'
 """
 
+
 class FileConfig(object):
     """Change a josn file on the remote machie
 
@@ -27,7 +28,7 @@ class FileConfig(object):
     def __init__(self, machine, path):
         self._tasks = None
         self._env = machine._env
-        self._path = path      
+        self._path = path
 
     def get_content(self):
         self.ssh_client = FileConfigClient(self._env).ssh_client()
@@ -48,7 +49,7 @@ class FileConfig(object):
 
     def __setitem__(self, key, val):
         self.src[key] = val
-    
+
     def __getitem__(self, item):
         self.src[item]
 
@@ -64,7 +65,7 @@ class FileConfigClient(object):
         self._ip = env.ip
         self._user = env.remote_user
         self._pass = env.password
-        
+
     def ssh_client(self):
         self.ssh = paramiko.SSHClient()
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
