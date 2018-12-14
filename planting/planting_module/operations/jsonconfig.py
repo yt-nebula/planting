@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
-
+import os
+os.sys.path.append('/home/jlpan/github/planting/')
 import os
 from functools import reduce
 import json
+import logging
 from collections import OrderedDict
 import os
-from planting.machine import Machine
 import paramiko
 
 EXAMPLES = r"""
@@ -16,6 +17,7 @@ EXAMPLES = r"""
         src['ip'] = '196.168.0.1'
 """
 
+FormatError = json.decoder.JSONDecodeError
 
 class FileConfig(object):
     """Change a josn file on the remote machie
@@ -29,35 +31,43 @@ class FileConfig(object):
         self._tasks = None
         self._env = machine._env
         self._path = path
+        self._planting = machine._planting
+        self.logger = logging
 
     def get_content(self):
-        self.ssh_client = FileConfigClient(self._env).ssh_client()
+        self.ssh_client = self.create_connect()
         self.remote_file = self.ssh_client.file(self._path, mode='r+')
         self.content = self.remote_file.read().decode('utf8')
         self.remote_file.close()
         return self.content
 
+    def create_connect(self):
+        return FileConfigClient(self._env).ssh_client()
+
     def __enter__(self):
         self.src = self.get_content()
-        self.src = json.loads(self.src)
+        try:
+            self.src = json.loads(self.src)
+        except FormatError:
+            self.logger_info('{} is not json file'.format(self._path))
         return self.src
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        self.logger_info("host {}: ".format(self._env.ip) +
+                        "Configure {0} Successfully".format(self._path))
         self.remote_temp_file = self.ssh_client.file(self._path, mode='w+')
         self.remote_temp_file.write(json.dumps(self.src, indent=4, sort_keys=False))
-        self.remote_temp_file.close()
+        self.remote_temp_file.close()    
+
+    def logger_info(self, msg):
+        self.logger.basicConfig(level=logging.INFO)
+        self.logger.info(msg)
 
     def __setitem__(self, key, val):
         self.src[key] = val
 
     def __getitem__(self, item):
         self.src[item]
-
-
-class Cont(str):
-    def __init__(self, cont):
-        self.str = cont
-
 
 class FileConfigClient(object):
 
@@ -69,8 +79,7 @@ class FileConfigClient(object):
     def ssh_client(self):
         self.ssh = paramiko.SSHClient()
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        self.ssh.connect(hostname='10.40.50.132', username='linuxadmin', password='Hello=111!')
-
+        self.ssh.connect(hostname=self._ip, username=self._user, password=self._pass)
         return self.ssh.open_sftp()
 
 if __name__ == '__main__':
