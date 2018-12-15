@@ -50,27 +50,27 @@ class Machine(object):
         env = self._env
         if env.ip is None:
             raise AttributeError("missing parameter ip")
-        if env.password is None:
+        if env.ssh_pass is None:
             raise AttributeError("missing parameter password")
-        if env.remote_user is None:
+        if env.ssh_user is None:
             raise AttributeError("missing parameter remote_user")
         self._planting = PlantingApi(env)
 
     @property
     def password(self):
-        return self._env.password
+        return self._env.ssh_pass
 
     @password.setter
     def password(self, value):
-        self._env.password = value
+        self._env.ssh_pass = value
 
     @property
     def remote_user(self):
-        return self._env.remote_user
+        return self._env.ssh_user
 
     @remote_user.setter
     def remote_user(self, value):
-        self._env.remote_user = value
+        self._env.ssh_user = value
 
     @property
     def ip(self):
