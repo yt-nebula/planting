@@ -57,7 +57,7 @@ LOGGING = {
             'propagate': True
         },
         'planting': {
-            'handlers': ['file'],
+            'handlers': ['file', 'console'],
             'level': os.getenv('ANSIBLE_LOG_LEVEL', 'DEBUG'),
         }
     },
