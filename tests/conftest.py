@@ -31,8 +31,8 @@ def machine(image_initialization):
         time.sleep(1)
     machine = Machine(
         ip=container.ip,
-        remote_user=container.username,
-        password=container.password)
+        ssh_user=container.username,
+        ssh_pass=container.password)
     machine.register_all()
     yield machine
     kill_container(container.container_id)

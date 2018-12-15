@@ -194,6 +194,6 @@ class ResultCallback(CallbackBase):
         self.errors += 1
         self.success = False
         self.finished = True
-        self.logger.error("ansible unreachable", extra=data)      
+        self.logger.error("ansible unreachable", extra=data)
 
     v2_runner_on_skipped = v2_runner_on_ok

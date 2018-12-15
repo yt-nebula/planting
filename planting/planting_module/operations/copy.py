@@ -35,7 +35,7 @@ class Copy(ModuleBase):
         if res is True:
             self._planting.logger.info(
                 "host {}: ".format(self._env.ip) +
-                "copy from {0} to {1} success".format(self._src, self._dest))
+                "copy from {0} to {1} success!".format(self._src, self._dest))
         else:
             self._planting.print_error()
 

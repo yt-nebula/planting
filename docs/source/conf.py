@@ -20,8 +20,8 @@ sys.path.insert(0, os.path.abspath('../../'))
 # -- Project information -----------------------------------------------------
 
 project = 'Planting'
-copyright = '2018, Nebula'
-author = 'Nebula'
+copyright = '2018, nebula'
+author = 'nebula'
 
 # The short X.Y version
 version = ''
@@ -43,7 +43,6 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
     'sphinx.ext.viewcode',
-    'sphinx.ext.githubpages',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -134,7 +133,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'Planting.tex', 'Planting Documentation',
-     'Nebula', 'manual'),
+     'nebula', 'manual'),
 ]
 
 

@@ -61,7 +61,7 @@ class PlantingApi(object):
                            syntax=None)
         self.loader = DataLoader()
         self.variable_manager = VariableManager()
-        self.passwords = {"conn_pass": env.password}
+        self.passwords = {"conn_pass": env.ssh_pass}
         self.results_callback = ResultCallback()
         self.logger = getLogger('planting')
         # after ansible 2.3 need parameter 'sources'
@@ -73,11 +73,11 @@ class PlantingApi(object):
             loader=self.loader, inventory=self.inventory)
         host_info = Host(name=env.ip, port='22')
         self.variable_manager.set_host_variable(
-            host_info, 'ansible_user', env.remote_user)
+            host_info, 'ansible_user', env.ssh_user)
         self.variable_manager.set_host_variable(
-            host_info, 'ansible_pass', env.password)
+            host_info, 'ansible_pass', env.ssh_pass)
         self.variable_manager.set_host_variable(
-            host_info, 'ansible_sudo_pass', env.password)
+            host_info, 'ansible_sudo_pass', env.ssh_pass)
         self.variable_manager.set_host_variable(
             host_info, 'ansible_python_interpreter', env.python)
 

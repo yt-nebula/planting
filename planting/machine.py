@@ -10,14 +10,26 @@ from planting.planting_module import operations, network
 
 
 class Machine(object):
-    def __init__(self, ip=None, remote_user=None, password=None, **kwargs):
+    """
+
+    Class Machine
+
+    Args:
+        ip(str): host
+
+        ssh_user(str): ssh username
+
+        ssh_pass(str): ssh password
+
+    """
+    def __init__(self, ip=None, ssh_user=None, ssh_pass=None, **kwargs):
         # FIXME: remove python parameter when docker image fix
         if 'python' not in kwargs:
             kwargs['python'] = '/usr/bin/python'
         self._env = Environment(
             ip=ip,
-            remote_user=remote_user,
-            password=password,
+            ssh_user=ssh_user,
+            ssh_pass=ssh_pass,
             python=kwargs['python'])
         self.build_planting()
         self.modules = []
@@ -38,27 +50,27 @@ class Machine(object):
         env = self._env
         if env.ip is None:
             raise AttributeError("missing parameter ip")
-        if env.password is None:
+        if env.ssh_pass is None:
             raise AttributeError("missing parameter password")
-        if env.remote_user is None:
+        if env.ssh_user is None:
             raise AttributeError("missing parameter remote_user")
         self._planting = PlantingApi(env)
 
     @property
     def password(self):
-        return self._env.password
+        return self._env.ssh_pass
 
     @password.setter
     def password(self, value):
-        self._env.password = value
+        self._env.ssh_pass = value
 
     @property
     def remote_user(self):
-        return self._env.remote_user
+        return self._env.ssh_user
 
     @remote_user.setter
     def remote_user(self, value):
-        self._env.remote_user = value
+        self._env.ssh_user = value
 
     @property
     def ip(self):

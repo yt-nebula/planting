@@ -4,8 +4,8 @@
 
 class Environment(object):
     def __init__(self, **kwargs):
-        self.password = kwargs['password']
-        self.remote_user = kwargs['remote_user']
+        self.ssh_pass = kwargs['ssh_pass']
+        self.ssh_user = kwargs['ssh_user']
         self.ip = kwargs['ip']
         self.python = '/usr/bin/python'
         if 'python' in kwargs:

@@ -34,7 +34,7 @@ class Fetch(ModuleBase):
         if res is True:
             self._planting.logger.info(
                 "host {}: ".format(self._env.ip) +
-                "fetch from remote {0} to local {1} success"
+                "fetch from remote {0} to local {1} success!"
                 .format(self._src, self._dest))
         else:
             self._planting.print_error()
