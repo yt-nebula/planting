@@ -38,7 +38,7 @@ class Create(ModuleBase):
         if res is True:
             self._planting.logger.info(
                 "host {}: ".format(self._env.ip) +
-                "create {0} {1} success".format(self._state, self._path))
+                "create {0} {1} success!".format(self._state, self._path))
         else:
             self._planting.print_error()
 

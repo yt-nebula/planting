@@ -41,7 +41,7 @@ class Process(ModuleBase):
         if res is True:
             self._planting.logger.info(
                 "host {}: ".format(self._env.ip) +
-                "handle service success, now active state is {0}"
+                "handle service success, now active state is {0}!"
                 .format(self._state))
         else:
             self._planting.print_error()

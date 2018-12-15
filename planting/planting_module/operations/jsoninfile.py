@@ -66,7 +66,7 @@ class Jsoninfile(ModuleBase):
         if res is True:
             self._planting.logger.info(
                 "host {}: ".format(self._env.ip) +
-                "modify {0} json file success".format(self._path))
+                "modify {0} json file success!".format(self._path))
         else:
             self._planting.print_error()
 

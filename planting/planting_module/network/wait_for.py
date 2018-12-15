@@ -41,7 +41,7 @@ class WaitFor(ModuleBase):
         if res is True:
             self._planting.logger.info(
                 "host {}: ".format(self._env.ip) +
-                "wait for port {0} to {1} success"
+                "wait for port {0} to {1} success!"
                 .format(self._port, self._state))
         else:
             self._planting.print_error()
