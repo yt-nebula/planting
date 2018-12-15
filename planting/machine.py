@@ -10,14 +10,26 @@ from planting.planting_module import operations, network
 
 
 class Machine(object):
-    def __init__(self, ip=None, remote_user=None, password=None, **kwargs):
+    """
+
+    Class Machine
+
+    Args:
+        ip(str): host
+
+        ssh_user(str): ssh username
+
+        ssh_pass(str): ssh password
+
+    """
+    def __init__(self, ip=None, ssh_user=None, ssh_pass=None, **kwargs):
         # FIXME: remove python parameter when docker image fix
         if 'python' not in kwargs:
             kwargs['python'] = '/usr/bin/python'
         self._env = Environment(
             ip=ip,
-            remote_user=remote_user,
-            password=password,
+            remote_user=ssh_user,
+            password=ssh_pass,
             python=kwargs['python'])
         self.build_planting()
         self.modules = []
