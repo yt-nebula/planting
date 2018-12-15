@@ -28,8 +28,8 @@ class Machine(object):
             kwargs['python'] = '/usr/bin/python'
         self._env = Environment(
             ip=ip,
-            remote_user=ssh_user,
-            password=ssh_pass,
+            ssh_user=ssh_user,
+            ssh_pass=ssh_pass,
             python=kwargs['python'])
         self.build_planting()
         self.modules = []
