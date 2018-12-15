@@ -12,14 +12,14 @@ import paramiko
 
 EXAMPLES = r"""
 
-    with FileConfig(node, 'root/foo.conf') as src:
+    with JsonConfig(node, 'root/foo.conf') as src:
 
         src['ip'] = '196.168.0.1'
 """
 
 FormatError = json.decoder.JSONDecodeError
 
-class FileConfig(object):
+class JsonConfig(object):
     """Change a josn file on the remote machie
 
     Args:
@@ -42,7 +42,7 @@ class FileConfig(object):
         return self.content
 
     def create_connect(self):
-        return FileConfigClient(self._env).ssh_client()
+        return JsonConfigClient(self._env).ssh_client()
 
     def __enter__(self):
         self.src = self.get_content()
@@ -69,7 +69,7 @@ class FileConfig(object):
     def __getitem__(self, item):
         self.src[item]
 
-class FileConfigClient(object):
+class JsonConfigClient(object):
 
     def __init__(self, env):
         self._ip = env.ip
@@ -85,6 +85,6 @@ class FileConfigClient(object):
 if __name__ == '__main__':
 
     node = Machine('xxx', 'xxx', 'xxx', python='/usr/bin/python')
-    with FileConfig(node, '/root/foo.conf') as src:
+    with JsonConfig(node, '/root/foo.conf') as src:
 
         src['ip'] = '196.168.0.1'
