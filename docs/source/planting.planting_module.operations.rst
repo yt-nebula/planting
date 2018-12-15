@@ -10,7 +10,7 @@ Machine.process
 
 example.::
 
-    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node = Machine(ip='XXX', ssh_user='XXX', ssh_pass='XXX')
     node.process(process='nginx', state='started')
 
 Machine.wait\_for
@@ -22,6 +22,6 @@ Machine.wait\_for
 
 example.::
 
-    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node = Machine(ip='XXX', ssh_user='XXX', ssh_pass='XXX')
     node.wait_for(port='22', state='started', timeout=10)
 

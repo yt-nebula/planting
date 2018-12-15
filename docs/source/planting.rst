@@ -10,4 +10,4 @@ class machine
 
 example.::
 
-    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node = Machine(ip='XXX', ssh_user='XXX', ssh_pass='XXX')

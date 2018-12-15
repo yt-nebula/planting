@@ -10,7 +10,7 @@ Machine.copy
 
 example.::
 
-    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node = Machine(ip='XXX', ssh_user='XXX', ssh_pass='XXX')
     node.copy(src='~/test.py', dest='~/copy/test.py')
 
 Machine.create
@@ -22,7 +22,7 @@ Machine.create
 
 example.::
 
-    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node = Machine(ip='XXX', ssh_user='XXX', ssh_pass='XXX')
     node.create(path='~/test.py', state='file')
     node.create(path='~/test', state='dir')
 
@@ -35,7 +35,7 @@ Machine.download
 
 example.::
 
-    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node = Machine(ip='XXX', ssh_user='XXX', ssh_pass='XXX')
     node.download(url='XXX', dest='/tests/')
 
 Machine.fetch
@@ -47,7 +47,7 @@ Machine.fetch
 
 example.::
 
-    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node = Machine(ip='XXX', ssh_user='XXX', ssh_pass='XXX')
     node.fetch(src='~/test.py', dest='~/test/)
 
 Machine.jsoninfile
@@ -59,13 +59,13 @@ Machine.jsoninfile
 
 example-1.::
 
-    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node = Machine(ip='XXX', ssh_user='XXX', ssh_pass='XXX')
     # infile.conf: {"a": {"b": 1}}
     node.jsoninfile(path='/root/infile.conf', keys=["a","b"], val=1)
 
 example-2.::
 
-    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node = Machine(ip='XXX', ssh_user='XXX', ssh_pass='XXX')
     # infile.conf: {"a": [{"b": 1}]}
     node.jsoninfile(path='/root/infile.conf', keys=["a",0,"b"], val=1)
 
@@ -78,7 +78,7 @@ Machine.move
 
 example.::
 
-    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node = Machine(ip='XXX', ssh_user='XXX', ssh_pass='XXX')
     node.move(src='~/test.py', dest='~/move/)
 
 Machine.pip
@@ -90,7 +90,7 @@ Machine.pip
 
 example.::
 
-    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node = Machine(ip='XXX', ssh_user='XXX', ssh_pass='XXX')
     node.pip(package='ansible', executable='pip-3.3')
 
 Machine.remove
@@ -102,7 +102,7 @@ Machine.remove
 
 example.::
 
-    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node = Machine(ip='XXX', ssh_user='XXX', ssh_pass='XXX')
     node.move(src='~/test.py')
 
 Machine.shell
@@ -114,7 +114,7 @@ Machine.shell
 
 example.::
 
-    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node = Machine(ip='XXX', ssh_user='XXX', ssh_pass='XXX')
     node.shell(command='cd ~/test')
 
 Machine.unarchive
@@ -126,6 +126,6 @@ Machine.unarchive
 
 example.::
 
-    node = Machine(ip='XXX', remote_user='XXX', password='XXX')
+    node = Machine(ip='XXX', ssh_user='XXX', ssh_pass='XXX')
     node.unarchiver(url='XXX', dest='/tests/')
 
