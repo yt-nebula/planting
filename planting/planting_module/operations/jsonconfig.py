@@ -32,7 +32,7 @@ class JsonConfig(object):
         self._env = machine._env
         self._path = path
         self._planting = machine._planting
-        self.logger = logging
+        self.logger = logging.getLogger('console')
 
     def get_content(self):
         self.ssh_client = self.create_connect()
@@ -60,7 +60,6 @@ class JsonConfig(object):
         self.remote_temp_file.close()    
 
     def logger_info(self, msg):
-        self.logger.basicConfig(level=logging.INFO)
         self.logger.info(msg)
 
     def __setitem__(self, key, val):
